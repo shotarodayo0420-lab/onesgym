@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>脚やせヒップアップ診断｜翔太朗コーチング</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0D0D0D;
+  --offwhite: #F5F0E8;
+  --gold: #C9A96E;
+  --gold-light: #E8D5A8;
+  --dark-section: #141414;
+  --mid: #2A2A2A;
+  --text-muted: #8a8a8a;
+  --serif: 'Noto Serif JP', serif;
+  --sans: 'Noto Sans JP', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--offwhite);
+  font-family: var(--sans);
+  font-weight: 300;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ── INTRO ── */
+#screen-intro {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 6rem 1.5rem;
+  position: relative;
+}
+#screen-intro::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(201,169,110,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.intro-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+.intro-title {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  font-weight: 300;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+.intro-title em { color: var(--gold); font-style: normal; }
+.intro-sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  max-width: 420px;
+  line-height: 2;
+  margin-bottom: 3rem;
+}
+.intro-meta {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.meta-item { text-align: center; }
+.meta-num { font-family: var(--serif); font-size: 1.5rem; color: var(--gold); }
+.meta-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.05em; }
+
+.btn {
+  display: inline-block;
+  padding: 1rem 3rem;
+  border: none;
+  background: var(--gold);
+  color: var(--black);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.btn:hover { background: var(--gold-light); }
+.btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.btn-outline {
+  display: inline-block;
+  padding: 0.85rem 2rem;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s;
+}
+.btn-outline:hover { background: var(--gold); color: var(--black); }
+
+/* ── QUIZ ── */
+#screen-quiz {
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1.5rem;
+}
+.quiz-card {
+  max-width: 560px;
+  width: 100%;
+}
+.progress-bar-wrap {
+  width: 100%;
+  height: 2px;
+  background: #222;
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--gold);
+  transition: width 0.4s ease;
+  width: 10%;
+}
+.progress-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 3rem;
+}
+.q-number {
+  font-family: var(--serif);
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+.q-text {
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
+  font-weight: 300;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+}
+.options { display: flex; flex-direction: column; gap: 0.75rem; }
+.option-btn {
+  text-align: left;
+  padding: 1.1rem 1.4rem;
+  background: var(--dark-section);
+  border: 1px solid #262626;
+  color: var(--offwhite);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  line-height: 1.6;
+}
+.option-btn:hover { border-color: var(--gold); background: #1a1a1a; }
+.option-btn.selected { border-color: var(--gold); background: #1c1808; }
+
+/* ── LOADING ── */
+#screen-loading {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 3rem;
+}
+.loader-ring {
+  width: 56px; height: 56px;
+  border: 1px solid #2a2a2a;
+  border-top: 1px solid var(--gold);
+  border-radius: 50%;
+  margin: 0 auto 2rem;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+/* ── RESULT ── */
+#screen-result {
+  justify-content: flex-start;
+  align-items: center;
+  padding: 4rem 1.5rem 6rem;
+}
+.result-wrap { max-width: 600px; width: 100%; }
+.result-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.result-cert {
+  border: 1px solid #2a2a2a;
+  padding: 2.5rem 2rem;
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+.result-cert::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid #1d1d1d;
+  pointer-events: none;
+}
+.result-type-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+.result-type-name {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 6vw, 2.4rem);
+  font-weight: 400;
+  color: var(--gold);
+  text-align: center;
+  line-height: 1.4;
+  margin-bottom: 2rem;
+}
+.result-desc {
+  font-size: 0.9rem;
+  color: rgba(245,240,232,0.8);
+  line-height: 2.1;
+  text-align: center;
+}
+
+.result-section { margin-bottom: 2.5rem; }
+.result-section-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.result-section-body {
+  font-size: 0.9rem;
+  color: rgba(245,240,232,0.75);
+  line-height: 2.1;
+}
+.result-list { list-style: none; }
+.result-list li {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #1e1e1e;
+  display: flex;
+  gap: 0.75rem;
+}
+.result-list li::before { content: '—'; color: var(--gold); flex-shrink: 0; }
+
+.result-highlight {
+  border-left: 2px solid var(--gold);
+  padding-left: 1.25rem;
+  margin: 2rem 0;
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--gold-light);
+  line-height: 1.9;
+}
+
+.result-cta {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #1e1e1e;
+}
+.result-cta-title {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+}
+.result-cta-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  line-height: 1.9;
+}
+.line-cta-btn {
+  display: inline-block;
+  padding: 1.1rem 2.5rem;
+  background: var(--gold);
+  color: var(--black);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: background 0.25s;
+}
+.line-cta-btn:hover { background: var(--gold-light); }
+.line-note {
+  font-size: 0.75rem;
+  color: #555;
+  margin-top: 1.25rem;
+}
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.7rem;
+  color: #444;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 480px) {
+  .quiz-card { max-width: 100%; }
+  .intro-meta { gap: 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== INTRO ===== -->
+<div class="screen active" id="screen-intro">
+  <p class="intro-eyebrow">Leg & Hip Type Diagnosis</p>
+  <h1 class="intro-title">
+    脚やせ<em>ヒップアップ</em><br>タイプ診断
+  </h1>
+  <p class="intro-sub">
+    脚が細くならないのも、お尻が上がらないのも、<br>
+    努力不足じゃない。10の質問であなたのタイプを可視化します。
+  </p>
+  <div class="intro-meta">
+    <div class="meta-item"><p class="meta-num">8問</p><p class="meta-label">QUESTIONS</p></div>
+    <div class="meta-item"><p class="meta-num">1分</p><p class="meta-label">DURATION</p></div>
+    <div class="meta-item"><p class="meta-num">無料</p><p class="meta-label">FREE</p></div>
+  </div>
+  <button class="btn" onclick="startQuiz()">診断をはじめる →</button>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div class="screen" id="screen-quiz">
+  <div class="quiz-card">
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <p class="progress-label" id="progressLabel">Q1 / 8</p>
+    <p class="q-number" id="qNumber">QUESTION 01</p>
+    <p class="q-text" id="qText"></p>
+    <div class="options" id="qOptions"></div>
+  </div>
+</div>
+
+<!-- ===== LOADING ===== -->
+<div class="screen" id="screen-loading">
+  <div>
+    <div class="loader-ring"></div>
+    <p class="loading-text">あなたの脚・お尻タイプを分析中...</p>
+  </div>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div class="screen" id="screen-result">
+  <div class="result-wrap">
+    <p class="result-eyebrow">Diagnosis Result</p>
+
+    <div class="result-cert">
+      <p class="result-type-label">YOUR TYPE</p>
+      <p class="result-type-name" id="resultTypeName"></p>
+      <p class="result-desc" id="resultDesc"></p>
+    </div>
+
+    <div class="result-section">
+      <p class="result-section-label">こんな経験、ありませんか</p>
+      <ul class="result-list" id="resultSymptoms"></ul>
+    </div>
+
+    <div class="result-section">
+      <p class="result-section-label">なぜそうなるのか</p>
+      <p class="result-section-body" id="resultWhy"></p>
+    </div>
+
+    <div class="result-highlight" id="resultHighlight"></div>
+
+    <div class="result-cta">
+      <p class="result-cta-title">あなたのタイプに合った<br>脚やせ・ヒップアップの方法があります。</p>
+      <p class="result-cta-sub">
+        公式LINEでは自宅でできるトレーニングもご覧になれます。<br>
+        無料トレーニングお待ちしております。
+      </p>
+      <a href="https://lin.ee/s2tnQWa" class="line-cta-btn" id="lineCtaBtn">公式LINEで診断結果の続きを見る</a>
+      <p class="line-note">友だち追加はこちらから</p>
+    </div>
+  </div>
+</div>
+
+<footer>© 2025 翔太朗 パーソナルジム</footer>
+
+<script>
+// ===== 設問データ =====
+// type: M=むくみ蓄積型 / K=反り腰・骨盤前傾型 / H=殿筋未発火型
+// N=猫背・重心後傾型 / Y=運動不足・有酸素偏重型 / null=どちらでもない(集計対象外)
+const questions = [
+  {
+    text: "夕方になると、脚や下半身の状態はどうなる？",
+    options: [
+      { label: "パンパンにむくんで靴がきつく感じる", type: "M" },
+      { label: "前ももだけが張って太く感じる", type: "K" },
+      { label: "お尻より前ももが疲れている感じがする", type: "H" },
+      { label: "腰やお尻まわりが重だるくなる", type: "N" },
+      { label: "どちらでもない", type: null }
+    ]
+  },
+  {
+    text: "自分の姿勢について、当てはまるのは？",
+    options: [
+      { label: "反り腰・骨盤が前に傾いていると言われたことがある", type: "K" },
+      { label: "立っている時、お尻より前ももに体重が乗っている感覚がある", type: "H" },
+      { label: "猫背・巻き肩を指摘されたことがある", type: "N" },
+      { label: "姿勢について特に意識したことがない", type: "Y" },
+      { label: "どちらでもない", type: null }
+    ]
+  },
+  {
+    text: "普段の一日の過ごし方で当てはまるのは？",
+    options: [
+      { label: "立ちっぱなし、もしくは座りっぱなしの時間が長い", type: "M" },
+      { label: "歩く時、お尻より前ももで蹴り出している感覚がある", type: "H" },
+      { label: "気づくと猫背になっていることが多い", type: "N" },
+      { label: "運動する習慣がほとんどない", type: "Y" },
+      { label: "どちらでもない", type: null }
+    ]
+  },
+  {
+    text: "スクワットや脚のトレーニングをすると、どこに効く？",
+    options: [
+      { label: "脚がむくんでいて、そもそも動かしづらい", type: "M" },
+      { label: "腰が反ってしまい、腰やお腹に効いてしまう", type: "K" },
+      { label: "お尻より前もも(太もも前)にばかり効く", type: "H" },
+      { label: "ほとんどトレーニングをしたことがない", type: "Y" },
+      { label: "どちらでもない", type: null }
+    ]
+  },
+  {
+    text: "塩分の多い食事やお酒について当てはまるのは？",
+    options: [
+      { label: "好んでよく食べる・飲む方だと思う", type: "M" },
+      { label: "味の濃いものが好きで、脚がよく張る気がする", type: "K" },
+      { label: "特に気にしていないが、姿勢の悪さは自覚がある", type: "N" },
+      { label: "食事より、まず運動不足が気になる", type: "Y" },
+      { label: "どちらでもない", type: null }
+    ]
+  },
+  {
+    text: "階段の上り下りで感じることは？",
+    options: [
+      { label: "前ももにすぐ効いて疲れる", type: "H" },
+      { label: "腰が反るような感覚があり、腰が疲れる", type: "K" },
+      { label: "猫背気味になり、姿勢が崩れやすい", type: "N" },
+      { label: "そもそも運動不足で息切れしやすい", type: "Y" },
+      { label: "どちらでもない", type: null }
+    ]
+  },
+  {
+    text: "靴下の跡やレギンスの締め付けについて、当てはまるのは？",
+    options: [
+      { label: "夕方になると靴下の跡がくっきり残る", type: "M" },
+      { label: "お尻の下あたりがきつく感じる", type: "H" },
+      { label: "姿勢のせいか、腰まわりがきつく感じる", type: "N" },
+      { label: "特にサイズ感が気になったことはない", type: "Y" },
+      { label: "どちらでもない", type: null }
+    ]
+  },
+  {
+    text: "本当はどうなりたい？",
+    options: [
+      { label: "スッキリとむくみのない引き締まった脚になりたい", type: "M" },
+      { label: "前ももを張らせずに、まっすぐ綺麗な脚のラインになりたい", type: "K" },
+      { label: "猫背や姿勢を整えて、後ろ姿から綺麗になりたい", type: "N" },
+      { label: "何をすればいいのか分かった上で、正しく鍛えたい", type: "Y" },
+      { label: "どちらでもない", type: null }
+    ]
+  }
+];
+
+const resultData = {
+  M: {
+    name: "むくみ蓄積型",
+    desc: "脚が太いのではなく、水分や老廃物が滞って“むくんで”太く見えているタイプ。",
+    symptoms: [
+      "夕方になると脚がパンパンになり、靴がきつくなる",
+      "塩分の多い食事やお酒の頻度が高い",
+      "立ちっぱなし・座りっぱなしの時間が長い"
+    ],
+    why: "ふくらはぎは「第二の心臓」と呼ばれ、筋肉のポンプ機能によって血液やリンパを心臓に戻しています。長時間同じ姿勢が続くとこのポンプ機能が働かず、水分が下半身に滞留してむくみとして蓄積されます。脂肪ではなく水分による膨張のため、食事制限だけでは改善しにくく、循環を促す動きが必要です。",
+    highlight: "脚を細くする前に、まず“流す”ことから始める必要があります。"
+  },
+  K: {
+    name: "反り腰・骨盤前傾型",
+    desc: "骨盤が前に傾き、前ももに負担が集中して脚が張り出してしまうタイプ。",
+    symptoms: [
+      "スクワットをすると腰が反って、腰や前ももに効いてしまう",
+      "前ももがパンパンに張り、太く見える",
+      "ヒールをよく履く、反り腰だと言われたことがある"
+    ],
+    why: "骨盤が前傾すると股関節が伸びた状態で固定され、本来使うべきお尻の筋肉ではなく前ももの筋肉(大腿四頭筋)ばかりが優位に働きます。この状態でトレーニングを重ねると、狙ったお尻ではなく前ももばかりが発達し、脚は張り出して見えるようになります。",
+    highlight: "骨盤の傾きを整えない限り、鍛えるほど前ももが太くなってしまいます。"
+  },
+  H: {
+    name: "殿筋未発火型",
+    desc: "お尻の筋肉がうまく使えておらず、日常動作もトレーニングも前ももに頼ってしまうタイプ。",
+    symptoms: [
+      "歩く・階段を上る時、お尻より前ももに効いている感覚がある",
+      "お尻が四角い・平べったい形をしている",
+      "お尻に力を入れる感覚がよく分からない"
+    ],
+    why: "長時間の座り姿勢が続くと、お尻の筋肉(大殿筋・中殿筋)への神経伝達が鈍くなる「殿筋の抑制」と呼ばれる状態が起こります。すると立つ・歩くといった日常動作でも脳が無意識に前ももを優先的に使うようになり、鍛えてもお尻ではなく前ももばかりが発達してしまいます。",
+    highlight: "回数をこなす前に、まずお尻を“目覚めさせる”ことが先です。"
+  },
+  N: {
+    name: "猫背・重心後傾型",
+    desc: "上半身の姿勢の崩れが、下半身の使い方やヒップラインにまで影響しているタイプ。",
+    symptoms: [
+      "猫背・巻き肩を指摘されたことがある",
+      "お尻が全体的に下に垂れてきている気がする",
+      "立っている時、かかと重心になりやすい"
+    ],
+    why: "猫背になると骨盤は後ろに傾きやすくなり、お尻の筋肉が引き伸ばされたまま力が入りにくい状態になります。さらに重心がかかとに逃げることで、歩行時にお尻を使って地面を蹴り出す動作が失われ、ヒップアップに必要な刺激が入らないまま日常が過ぎていきます。",
+    highlight: "下半身だけを見ていても変わりません。姿勢全体を整えることが近道です。"
+  },
+  Y: {
+    name: "運動不足・有酸素偏重型",
+    desc: "頑張り方は間違っていなかったのに、正しい負荷がかかっていなかっただけのタイプ。",
+    symptoms: [
+      "ウォーキングなどの有酸素運動は頑張ってきたが、脚のラインは変わらなかった",
+      "筋トレをほとんどしたことがない",
+      "何をどう鍛えればいいのか分からないまま今まできた"
+    ],
+    why: "有酸素運動はカロリー消費には有効ですが、お尻を引き上げたり脚のラインを引き締めたりするには、対象の筋肉に直接負荷をかける筋力トレーニングが不可欠です。正しい部位に、正しい強度で、正しい頻度で負荷をかけない限り、どれだけ運動しても見た目の変化にはつながりません。",
+    highlight: "足りなかったのは努力ではなく、正しい負荷のかけ方です。"
+  }
+};
+
+let currentQ = 0;
+let answers = [];
+
+function startQuiz() {
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('qNumber').textContent = `QUESTION ${String(currentQ + 1).padStart(2, '0')}`;
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('progressLabel').textContent = `Q${currentQ + 1} / ${questions.length}`;
+  document.getElementById('progressFill').style.width = `${((currentQ + 1) / questions.length) * 100}%`;
+
+  const optionsWrap = document.getElementById('qOptions');
+  optionsWrap.innerHTML = '';
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt.label;
+    btn.onclick = () => selectAnswer(opt.type);
+    optionsWrap.appendChild(btn);
+  });
+}
+
+function selectAnswer(type) {
+  answers.push(type);
+  currentQ++;
+  if (currentQ < questions.length) {
+    renderQuestion();
+  } else {
+    showScreen('screen-loading');
+    setTimeout(showResult, 1600);
+  }
+}
+
+function showResult() {
+  const counts = { M: 0, K: 0, H: 0, N: 0, Y: 0 };
+  answers.forEach(a => { if (a) counts[a]++; });
+
+  // 最多得点のタイプを全て抽出（同点があれば複数残る）
+  const maxCount = Math.max(...Object.values(counts));
+  const topTypes = Object.keys(counts).filter(t => counts[t] === maxCount);
+  // 同点の場合はランダムに1つ選ぶ（特定タイプに偏らないようにする）
+  const topType = topTypes[Math.floor(Math.random() * topTypes.length)];
+
+  const data = resultData[topType];
+
+  document.getElementById('resultTypeName').textContent = data.name;
+  document.getElementById('resultDesc').textContent = data.desc;
+  document.getElementById('resultWhy').textContent = data.why;
+  document.getElementById('resultHighlight').textContent = data.highlight;
+
+  const symptomsList = document.getElementById('resultSymptoms');
+  symptomsList.innerHTML = '';
+  data.symptoms.forEach(s => {
+    const li = document.createElement('li');
+    li.textContent = s;
+    symptomsList.appendChild(li);
+  });
+
+  // LINE登録ボタンに診断結果タイプをパラメータとして付与
+  // Lステップ側でこのtypeパラメータを読み取り、対応するタグを自動付与する設定にする
+  const lineBtn = document.getElementById('lineCtaBtn');
+  const baseLineUrl = lineBtn.getAttribute('href').split('?')[0];
+  lineBtn.setAttribute('href', `${baseLineUrl}?type=${topType}`);
+
+  showScreen('screen-result');
+  window.scrollTo(0, 0);
+}
+</script>
+
+</body>
+</html>
