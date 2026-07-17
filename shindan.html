@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>メンタルと身体のタイプ診断｜翔太朗コーチング</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0D0D0D;
+  --offwhite: #F5F0E8;
+  --gold: #C9A96E;
+  --gold-light: #E8D5A8;
+  --dark-section: #141414;
+  --mid: #2A2A2A;
+  --text-muted: #8a8a8a;
+  --serif: 'Noto Serif JP', serif;
+  --sans: 'Noto Sans JP', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--offwhite);
+  font-family: var(--sans);
+  font-weight: 300;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ── INTRO ── */
+#screen-intro {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 6rem 1.5rem;
+  position: relative;
+}
+#screen-intro::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(201,169,110,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.intro-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+.intro-title {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  font-weight: 300;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+.intro-title em { color: var(--gold); font-style: normal; }
+.intro-sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  max-width: 420px;
+  line-height: 2;
+  margin-bottom: 3rem;
+}
+.intro-meta {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.meta-item { text-align: center; }
+.meta-num { font-family: var(--serif); font-size: 1.5rem; color: var(--gold); }
+.meta-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.05em; }
+
+.btn {
+  display: inline-block;
+  padding: 1rem 3rem;
+  border: none;
+  background: var(--gold);
+  color: var(--black);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.btn:hover { background: var(--gold-light); }
+.btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.btn-outline {
+  display: inline-block;
+  padding: 0.85rem 2rem;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s;
+}
+.btn-outline:hover { background: var(--gold); color: var(--black); }
+
+/* ── QUIZ ── */
+#screen-quiz {
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1.5rem;
+}
+.quiz-card {
+  max-width: 560px;
+  width: 100%;
+}
+.progress-bar-wrap {
+  width: 100%;
+  height: 2px;
+  background: #222;
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--gold);
+  transition: width 0.4s ease;
+  width: 10%;
+}
+.progress-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 3rem;
+}
+.q-number {
+  font-family: var(--serif);
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+.q-text {
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
+  font-weight: 300;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+}
+.options { display: flex; flex-direction: column; gap: 0.75rem; }
+.option-btn {
+  text-align: left;
+  padding: 1.1rem 1.4rem;
+  background: var(--dark-section);
+  border: 1px solid #262626;
+  color: var(--offwhite);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  line-height: 1.6;
+}
+.option-btn:hover { border-color: var(--gold); background: #1a1a1a; }
+.option-btn.selected { border-color: var(--gold); background: #1c1808; }
+
+/* ── LOADING ── */
+#screen-loading {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 3rem;
+}
+.loader-ring {
+  width: 56px; height: 56px;
+  border: 1px solid #2a2a2a;
+  border-top: 1px solid var(--gold);
+  border-radius: 50%;
+  margin: 0 auto 2rem;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+/* ── RESULT ── */
+#screen-result {
+  justify-content: flex-start;
+  align-items: center;
+  padding: 4rem 1.5rem 6rem;
+}
+.result-wrap { max-width: 600px; width: 100%; }
+.result-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.result-cert {
+  border: 1px solid #2a2a2a;
+  padding: 2.5rem 2rem;
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+.result-cert::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid #1d1d1d;
+  pointer-events: none;
+}
+.result-type-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+.result-type-name {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 6vw, 2.4rem);
+  font-weight: 400;
+  color: var(--gold);
+  text-align: center;
+  line-height: 1.4;
+  margin-bottom: 2rem;
+}
+.result-desc {
+  font-size: 0.9rem;
+  color: rgba(245,240,232,0.8);
+  line-height: 2.1;
+  text-align: center;
+}
+
+.result-section { margin-bottom: 2.5rem; }
+.result-section-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.result-section-body {
+  font-size: 0.9rem;
+  color: rgba(245,240,232,0.75);
+  line-height: 2.1;
+}
+.result-list { list-style: none; }
+.result-list li {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #1e1e1e;
+  display: flex;
+  gap: 0.75rem;
+}
+.result-list li::before { content: '—'; color: var(--gold); flex-shrink: 0; }
+
+.result-highlight {
+  border-left: 2px solid var(--gold);
+  padding-left: 1.25rem;
+  margin: 2rem 0;
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--gold-light);
+  line-height: 1.9;
+}
+
+.result-cta {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #1e1e1e;
+}
+.result-cta-title {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+}
+.result-cta-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  line-height: 1.9;
+}
+.line-cta-btn {
+  display: inline-block;
+  padding: 1.1rem 2.5rem;
+  background: var(--gold);
+  color: var(--black);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: background 0.25s;
+}
+.line-cta-btn:hover { background: var(--gold-light); }
+.line-note {
+  font-size: 0.75rem;
+  color: #555;
+  margin-top: 1.25rem;
+}
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.7rem;
+  color: #444;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 480px) {
+  .quiz-card { max-width: 100%; }
+  .intro-meta { gap: 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== INTRO ===== -->
+<div class="screen active" id="screen-intro">
+  <p class="intro-eyebrow">Mental & Body Type Diagnosis</p>
+  <h1 class="intro-title">
+    メンタルと<em>身体</em>の<br>タイプ診断
+  </h1>
+  <p class="intro-sub">
+    痩せられないのも、リバウンドするのも、続かないのも、<br>
+    意志の弱さじゃない。10の質問であなたのタイプを可視化します。
+  </p>
+  <div class="intro-meta">
+    <div class="meta-item"><p class="meta-num">10問</p><p class="meta-label">QUESTIONS</p></div>
+    <div class="meta-item"><p class="meta-num">2分</p><p class="meta-label">DURATION</p></div>
+    <div class="meta-item"><p class="meta-num">無料</p><p class="meta-label">FREE</p></div>
+  </div>
+  <button class="btn" onclick="startQuiz()">診断をはじめる →</button>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div class="screen" id="screen-quiz">
+  <div class="quiz-card">
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <p class="progress-label" id="progressLabel">Q1 / 10</p>
+    <p class="q-number" id="qNumber">QUESTION 01</p>
+    <p class="q-text" id="qText"></p>
+    <div class="options" id="qOptions"></div>
+  </div>
+</div>
+
+<!-- ===== LOADING ===== -->
+<div class="screen" id="screen-loading">
+  <div>
+    <div class="loader-ring"></div>
+    <p class="loading-text">あなたのタイプを分析中...</p>
+  </div>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div class="screen" id="screen-result">
+  <div class="result-wrap">
+    <p class="result-eyebrow">Diagnosis Result</p>
+
+    <div class="result-cert">
+      <p class="result-type-label">YOUR TYPE</p>
+      <p class="result-type-name" id="resultTypeName"></p>
+      <p class="result-desc" id="resultDesc"></p>
+    </div>
+
+    <div class="result-section">
+      <p class="result-section-label">こんな経験、ありませんか</p>
+      <ul class="result-list" id="resultSymptoms"></ul>
+    </div>
+
+    <div class="result-section">
+      <p class="result-section-label">なぜそうなるのか</p>
+      <p class="result-section-body" id="resultWhy"></p>
+    </div>
+
+    <div class="result-highlight" id="resultHighlight"></div>
+
+    <div class="result-cta">
+      <p class="result-cta-title">あなたのタイプに合った<br>変化の起こし方があります。</p>
+      <p class="result-cta-sub">
+        まずは無料カウンセリングで、あなたに合ったアプローチを一緒に考えましょう。
+      </p>
+      <a href="https://forms.gle/EirY8Vs2nvdk3AtV8" target="_blank" class="line-cta-btn" id="lineCtaBtn">無料カウンセリングを予約する</a>
+    </div>
+  </div>
+</div>
+
+<footer>© 2025 翔太朗 Coaching × Diet Program</footer>
+
+<script>
+// ===== 設問データ =====
+// type: P=完璧主義リバウンド型 / S=承認依存型 / G=罪悪感ループ型
+// C=コンフォートゾーン回帰型 / D=先延ばし・きっかけ待ち型
+const questions = [
+  {
+    text: "ダイエット中、1回甘いものを食べてしまったらどうなる？",
+    options: [
+      { label: "「もう今日は無理」と諦めて、その日は食べ続けてしまう", type: "P" },
+      { label: "誰かに見られてないか、ちょっと気になる", type: "S" },
+      { label: "「また失敗した」と自分を責めてしまう", type: "G" },
+      { label: "特に気にしないが、なぜか数日後には元の生活に戻っている", type: "C" }
+    ]
+  },
+  {
+    text: "ダイエットを始めるタイミングについて、よくあるのは？",
+    options: [
+      { label: "「月曜から」「来月から」と決めて、結局先延ばしになる", type: "D" },
+      { label: "誰かと一緒に始める時だけ重い腰が上がる", type: "S" },
+      { label: "完璧な準備が整うまで始められない", type: "P" },
+      { label: "始めても理由を見失って波がある", type: "C" }
+    ]
+  },
+  {
+    text: "体重が増えた日の朝、最初に思うことは？",
+    options: [
+      { label: "「私はやっぱりダメだ」と自己嫌悪になる", type: "G" },
+      { label: "「完璧にやらなきゃ意味がない」と振り出しに戻った気がする", type: "P" },
+      { label: "「今日は誰にも会いたくないな」と思う", type: "S" },
+      { label: "「また明日から頑張ろう」と先延ばしにする", type: "D" }
+    ]
+  },
+  {
+    text: "過去のダイエットで一番つらかったことは？",
+    options: [
+      { label: "周りからの「痩せたね」が止まると、頑張る理由を見失ったこと", type: "S" },
+      { label: "1日でも計画が崩れると、全部やり直したくなったこと", type: "P" },
+      { label: "頑張っても、なぜか元の体型・生活に戻ってしまうこと", type: "C" },
+      { label: "「ちゃんと準備してから」と先延ばしにして結局始められなかったこと", type: "D" }
+    ]
+  },
+  {
+    text: "「痩せた自分」を想像した時、正直な気持ちは？",
+    options: [
+      { label: "なんだか自分らしくない気がする", type: "C" },
+      { label: "周りからどう見られるか気になる", type: "S" },
+      { label: "完璧に維持し続けないといけないプレッシャーを感じる", type: "P" },
+      { label: "そのうちなれたらいいな、くらいで具体的に考えていない", type: "D" }
+    ]
+  },
+  {
+    text: "SNSで他人の体型やダイエット投稿を見た時は？",
+    options: [
+      { label: "つい比較して落ち込んでしまう", type: "S" },
+      { label: "「自分も完璧にやらなきゃ」と焦る", type: "P" },
+      { label: "「自分には無理かも」と諦めの気持ちになる", type: "C" },
+      { label: "「いいな」と思うだけで、特に行動には移さない", type: "D" }
+    ]
+  },
+  {
+    text: "食事制限中、一番ストレスを感じる瞬間は？",
+    options: [
+      { label: "誰かに「無理してるね」と言われた時", type: "S" },
+      { label: "計画通りに食べられなかった時", type: "P" },
+      { label: "食べたいものを我慢している自分に矛盾を感じる時", type: "C" },
+      { label: "食べた後の罪悪感が押し寄せてくる時", type: "G" }
+    ]
+  },
+  {
+    text: "ダイエットが続かなくなる一番のきっかけは？",
+    options: [
+      { label: "応援してくれる人や見てくれる人がいなくなった時", type: "S" },
+      { label: "一度計画が崩れて「もういいや」となった時", type: "P" },
+      { label: "頑張る理由や目的を見失った時", type: "C" },
+      { label: "食べてしまった罪悪感に耐えられなくなった時", type: "G" }
+    ]
+  },
+  {
+    text: "自分を一言で表すなら？",
+    options: [
+      { label: "人からどう見られるかをいつも気にしている", type: "S" },
+      { label: "白黒はっきりさせたいタイプ", type: "P" },
+      { label: "やる気はあるのに、なかなか動き出せない", type: "D" },
+      { label: "自分にすごく厳しい", type: "G" }
+    ]
+  },
+  {
+    text: "本当はどうなりたい？",
+    options: [
+      { label: "他人の評価に振り回されずに自分のペースで続けたい", type: "S" },
+      { label: "完璧じゃなくても続けられる自分になりたい", type: "P" },
+      { label: "「いつかやる」ではなく今すぐ動ける自分になりたい", type: "D" },
+      { label: "食べることに罪悪感を持たずに楽しみたい", type: "G" }
+    ]
+  }
+];
+
+const resultData = {
+  P: {
+    name: "完璧主義リバウンド型",
+    desc: "白黒はっきりさせたい思考が、ダイエットでは逆効果になっているタイプ。",
+    symptoms: [
+      "1回の失敗で「もう今日はいいや」と全部投げ出してしまう",
+      "計画通りにできないと、最初からやり直したくなる",
+      "80点では納得できず、100点以外は失敗だと感じてしまう"
+    ],
+    why: "これは「二分法的思考（dichotomous thinking）」と呼ばれる認知パターンです。研究では、この思考が強い人ほどダイエット後1年以内に体重を維持できない傾向があることがわかっています。一方、食への柔軟な考え方を持つ人ほど体重管理に成功しています。つまり、完璧を目指すこと自体が、続かない原因になっているのです。",
+    highlight: "100点を目指すのをやめた瞬間に、続けられるようになります。"
+  },
+  S: {
+    name: "承認依存型",
+    desc: "誰かに見られている時は頑張れるのに、一人になると崩れてしまうタイプ。",
+    symptoms: [
+      "「痩せたね」と言われなくなると、頑張る理由を見失う",
+      "誰かと一緒だと続くのに、一人だとサボってしまう",
+      "SNSでの反応や周りの目が、モチベーションの大部分を占めている"
+    ],
+    why: "外的な承認を動機にした行動は、その承認がなくなった瞬間に止まりやすいという性質があります。コーチング理論では、行動の源が「自分の内側にあるか・外側にあるか」が継続力を大きく左右するとされています。あなたの場合、頑張る理由がまだ「自分の内側」に根付いていない可能性があります。",
+    highlight: "誰かに見られていなくても続けられる理由を、自分の中に作ることがカギです。"
+  },
+  G: {
+    name: "罪悪感ループ型",
+    desc: "食べた後の罪悪感が、次の過食を引き起こす悪循環にいるタイプ。",
+    symptoms: [
+      "食べた後に「また失敗した」と自分を責めてしまう",
+      "罪悪感から逃れるために、さらに食べてしまうことがある",
+      "食事そのものへの恐怖や緊張感がある"
+    ],
+    why: "カロリー制限はストレスホルモンであるコルチゾールの分泌を増加させることがわかっています。さらに「食べた自分への罪悪感」がストレスとなり、それを紛らわせるためにまた食べてしまう——という循環が、心理学的にも報告されています。食事の内容ではなく、食べた後の「自分への解釈」が変わらない限り、このループは止まりません。",
+    highlight: "罪悪感を手放した時、初めて食事との健全な関係が築けます。"
+  },
+  C: {
+    name: "コンフォートゾーン回帰型",
+    desc: "頑張って痩せても、無意識に「元の自分」へ戻ろうとしてしまうタイプ。",
+    symptoms: [
+      "痩せても、なぜか数ヶ月後には元の生活に戻っている",
+      "「痩せた自分」がどこか自分らしくないと感じる",
+      "変化より安定を選んでしまう傾向がある"
+    ],
+    why: "人の脳には、身体の体温調節と同じように「自分はこういう人間だ」というセルフイメージを一定に保とうとする働きがあります。これは心理学で「コンフォートゾーン」と呼ばれるものです。痩せた状態がこのセルフイメージの外側にあると、脳は無意識に元へ戻そうとします。宝くじの高額当選者の多くが数年で元の経済状態に戻る現象も、同じ原理で説明されています。",
+    highlight: "セルフイメージごと書き換えない限り、身体だけ変えても元に戻ります。"
+  },
+  D: {
+    name: "先延ばし・きっかけ待ち型",
+    desc: "「月曜から」「来月から」が口癖になり、行動を始めるハードルが高くなっているタイプ。",
+    symptoms: [
+      "完璧なタイミングが来るまで始められない",
+      "「いつかやる」と思いながら、何年も同じ状態が続いている",
+      "やる気はあるのに、最初の一歩がなかなか踏み出せない"
+    ],
+    why: "行動科学では、行動が起きない最大の理由は「やる気の不足」ではなく「行動のハードルの高さ」だとされています。非現実的な目標や「完璧に始めたい」という思いが、逆に最初の一歩を遠ざけてしまうのです。習慣形成の研究でも、ハードルを極端に下げることが行動開始の鍵だとわかっています。あなたに必要なのは気合ではなく、始めやすい設計です。",
+    highlight: "完璧なタイミングを待つのをやめた瞬間に、もう始まっています。"
+  }
+};
+
+let currentQ = 0;
+let answers = [];
+
+function startQuiz() {
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('qNumber').textContent = `QUESTION ${String(currentQ + 1).padStart(2, '0')}`;
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('progressLabel').textContent = `Q${currentQ + 1} / ${questions.length}`;
+  document.getElementById('progressFill').style.width = `${((currentQ + 1) / questions.length) * 100}%`;
+
+  const optionsWrap = document.getElementById('qOptions');
+  optionsWrap.innerHTML = '';
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt.label;
+    btn.onclick = () => selectAnswer(opt.type);
+    optionsWrap.appendChild(btn);
+  });
+}
+
+function selectAnswer(type) {
+  answers.push(type);
+  currentQ++;
+  if (currentQ < questions.length) {
+    renderQuestion();
+  } else {
+    showScreen('screen-loading');
+    setTimeout(showResult, 1600);
+  }
+}
+
+function showResult() {
+  const counts = { P: 0, S: 0, G: 0, C: 0, D: 0 };
+  answers.forEach(a => counts[a]++);
+
+  // 最多得点のタイプを全て抽出（同点があれば複数残る）
+  const maxCount = Math.max(...Object.values(counts));
+  const topTypes = Object.keys(counts).filter(t => counts[t] === maxCount);
+  // 同点の場合はランダムに1つ選ぶ（特定タイプに偏らないようにする）
+  const topType = topTypes[Math.floor(Math.random() * topTypes.length)];
+
+  const data = resultData[topType];
+
+  document.getElementById('resultTypeName').textContent = data.name;
+  document.getElementById('resultDesc').textContent = data.desc;
+  document.getElementById('resultWhy').textContent = data.why;
+  document.getElementById('resultHighlight').textContent = data.highlight;
+
+  const symptomsList = document.getElementById('resultSymptoms');
+  symptomsList.innerHTML = '';
+  data.symptoms.forEach(s => {
+    const li = document.createElement('li');
+    li.textContent = s;
+    symptomsList.appendChild(li);
+  });
+
+  // LINE登録ボタンに診断結果タイプをパラメータとして付与
+  // Lステップ側でこのtypeパラメータを読み取り、対応するタグを自動付与する設定にする
+  const lineBtn = document.getElementById('lineCtaBtn');
+  const baseLineUrl = lineBtn.getAttribute('href').split('?')[0];
+  lineBtn.setAttribute('href', `${baseLineUrl}?type=${topType}`);
+
+  showScreen('screen-result');
+  window.scrollTo(0, 0);
+}
+</script>
+
+</body>
+</html>
