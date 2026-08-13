@@ -183,6 +183,37 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
 .t-author{font-size:.6rem;letter-spacing:.08em;color:var(--gray2);}
 
 /* CTA BAND */
+
+/* ── NEWS / COLUMN SECTION ── */
+.column-sec{background:var(--surface);padding:6rem 3rem 6.5rem;}
+.column-inner{max-width:1120px;margin:0 auto;}
+.column-head{text-align:center;margin-bottom:3.2rem;}
+.column-eyebrow{font-size:.62rem;letter-spacing:.35em;color:var(--gold);margin-bottom:1rem;text-transform:uppercase;}
+.column-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,3.2vw,2.8rem);font-weight:300;color:var(--ink);margin-bottom:.6rem;}
+.column-title em{font-style:italic;color:var(--gold);}
+.column-sub{font-size:.76rem;color:var(--gray);line-height:2;}
+.column-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.8rem;margin-bottom:3rem;}
+.col-card{background:var(--white);text-decoration:none;color:inherit;display:flex;flex-direction:column;overflow:hidden;transition:transform .4s,box-shadow .4s;box-shadow:0 2px 14px rgba(0,0,0,.04);}
+.col-card:hover{transform:translateY(-6px);box-shadow:0 14px 40px rgba(0,0,0,.1);}
+.col-thumb{aspect-ratio:16/10;overflow:hidden;position:relative;background:var(--surface3);}
+.col-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .6s;}
+.col-card:hover .col-thumb img{transform:scale(1.06);}
+.col-thumb-label{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.4rem;background:linear-gradient(135deg,var(--ink),var(--ink2));color:var(--white);}
+.col-thumb-label span{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;font-style:italic;color:var(--gold-light);}
+.col-thumb-label small{font-size:.6rem;letter-spacing:.2em;color:rgba(255,255,255,.5);}
+.col-body{padding:1.5rem 1.6rem 1.8rem;display:flex;flex-direction:column;flex:1;}
+.col-cat{font-size:.58rem;letter-spacing:.15em;color:var(--gold);margin-bottom:.7rem;}
+.col-ttl{font-size:.92rem;font-weight:400;line-height:1.65;color:var(--ink);margin-bottom:1rem;flex:1;}
+.col-more{font-size:.66rem;letter-spacing:.1em;color:var(--gray);}
+.col-card:hover .col-more{color:var(--gold);}
+.column-allbtn{text-align:center;}
+.column-allbtn a{display:inline-block;border:1px solid var(--ink);color:var(--ink);text-decoration:none;padding:.95rem 2.8rem;font-size:.68rem;letter-spacing:.18em;transition:all .3s;}
+.column-allbtn a:hover{background:var(--ink);color:var(--white);}
+@media (max-width:768px){
+  .column-sec{padding:4rem 1.4rem 4.5rem;}
+  .column-grid{grid-template-columns:1fr;gap:1.4rem;margin-bottom:2.4rem;}
+}
+
 .cta-band{background:var(--ink);padding:5rem 3rem;text-align:center;}
 .cta-band-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3.2rem);font-weight:300;color:var(--white);margin-bottom:.8rem;}
 .cta-band-title em{font-style:italic;color:rgba(255,255,255,.4);}
@@ -652,6 +683,45 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
     <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">「体重より身体の感覚が変わったことが一番の収穫。鏡を見るのが楽しくなりました。」</p><p class="t-author">40代・管理職・女性</p></div>
     <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">「食事アドバイスも一緒にしてもらえるのでトータルで変われた実感があります。」</p><p class="t-author">30代・デザイナー・女性</p></div>
     <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">「恵比寿でこの質とこの価格は破格だと思います。通い続けられる理由がある。」</p><p class="t-author">50代・主婦・女性</p></div>
+  </div>
+</section>
+
+
+<!-- ── NEW: COLUMN / BLOG SECTION ── -->
+<section class="column-sec reveal">
+  <div class="column-inner">
+    <div class="column-head">
+      <div class="column-eyebrow">Column</div>
+      <h2 class="column-title">お役立ち<em>コラム</em></h2>
+      <p class="column-sub">ボディメイク・姿勢・栄養——現場の知見をわかりやすくお届けします。</p>
+    </div>
+    <div class="column-grid">
+      <a href="blog-hip-up-pelvis.html" class="col-card">
+        <div class="col-thumb"><div class="col-thumb-label"><span>Hip Up</span><small>ONE'S GYM COLUMN</small></div></div>
+        <div class="col-body">
+          <div class="col-cat">姿勢・ヒップアップ</div>
+          <div class="col-ttl">骨盤の歪みとヒップアップ——美尻をつくる土台の話</div>
+          <div class="col-more">記事を読む →</div>
+        </div>
+      </a>
+      <a href="ブログ「呼吸パフォーマンス」.html" class="col-card">
+        <div class="col-thumb"><div class="col-thumb-label"><span>Breath</span><small>ONE'S GYM COLUMN</small></div></div>
+        <div class="col-body">
+          <div class="col-cat">パフォーマンス</div>
+          <div class="col-ttl">呼吸を制する者が身体を制する——呼吸とパフォーマンスの関係</div>
+          <div class="col-more">記事を読む →</div>
+        </div>
+      </a>
+      <a href="blog.html" class="col-card">
+        <div class="col-thumb"><div class="col-thumb-label"><span>More</span><small>ONE'S GYM COLUMN</small></div></div>
+        <div class="col-body">
+          <div class="col-cat">コラム一覧</div>
+          <div class="col-ttl">その他のコラムはこちら。トレーニング・食事・体づくりのヒント。</div>
+          <div class="col-more">一覧を見る →</div>
+        </div>
+      </a>
+    </div>
+    <div class="column-allbtn"><a href="blog.html">すべてのコラムを見る</a></div>
   </div>
 </section>
 
