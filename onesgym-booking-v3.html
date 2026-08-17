@@ -655,8 +655,7 @@ async function submitBooking(){
   };
   try{
     if(cfg.gas){
-      const res=await fetch(cfg.gas,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-      if(!res.ok) throw new Error('GAS応答エラー: '+res.status);
+      await fetch(cfg.gas,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     } else {
       await new Promise(r=>setTimeout(r,1000));
     }
