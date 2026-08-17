@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONE'S GYM | セッション予約</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Serif+Display&family=Inter:wght@300;400;500;600&display=swap');
+:root {
+  --black:#080808; --surface:#111; --surface2:#181818; --border:#252525; --border2:#333;
+  --gold:#b8954a; --gold-light:#d4b06a; --gold-dim:rgba(184,149,74,.12);
+  --white:#f0ede8; --muted:#666; --muted2:#999; --error:#c0392b; --success:#27ae60;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--black);color:var(--white);font-family:'Noto Sans JP','Inter',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
+
+/* Header */
+.header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20;background:rgba(8,8,8,.93);backdrop-filter:blur(12px);}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand-emblem{width:36px;height:36px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display';font-size:15px;color:var(--gold);}
+.brand-name{font-family:'Inter';font-size:12px;font-weight:500;letter-spacing:.2em;}
+.brand-sub{font-size:9px;color:var(--muted2);letter-spacing:.12em;margin-top:2px;}
+
+/* Cart Badge */
+.cart-btn{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gold);border:1px solid rgba(184,149,74,.4);padding:7px 16px;cursor:pointer;background:none;font-family:inherit;transition:all .2s;position:relative;}
+.cart-btn:hover{background:var(--gold-dim);}
+.cart-count{background:var(--gold);color:var(--black);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
+
+/* Page */
+.page{max-width:800px;margin:0 auto;padding:40px 20px 120px;}
+
+/* Config */
+.config-panel{border:1px solid rgba(184,149,74,.2);background:rgba(184,149,74,.03);padding:16px 18px;margin-bottom:32px;}
+.config-title{font-size:10px;letter-spacing:.15em;color:var(--gold);margin-bottom:12px;text-transform:uppercase;}
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.cfg-field{display:flex;flex-direction:column;gap:4px;}
+.cfg-field label{font-size:9px;color:var(--muted2);letter-spacing:.06em;}
+.cfg-field input{background:var(--surface);border:1px solid var(--border);color:var(--white);padding:6px 9px;font-size:11px;font-family:monospace;outline:none;transition:border-color .2s;}
+.cfg-field input:focus{border-color:var(--gold);}
+.cfg-save{margin-top:10px;display:flex;align-items:center;gap:10px;}
+.cfg-saved{font-size:11px;color:var(--success);display:none;}
+
+/* Progress */
+.progress{display:flex;align-items:center;margin-bottom:44px;}
+.ps{display:flex;align-items:center;gap:8px;flex:1;}
+.pd{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--muted);flex-shrink:0;transition:all .3s;}
+.ps.active .pd{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+.ps.done .pd{background:var(--gold);border-color:var(--gold);color:var(--black);}
+.pl{font-size:10px;color:var(--muted);letter-spacing:.05em;}
+.ps.active .pl{color:var(--white);}
+.pline{height:1px;background:var(--border);flex:1;margin:0 4px;}
+
+/* Section */
+.section{display:none;animation:up .3s ease;}
+.section.active{display:block;}
+@keyframes up{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.eyebrow{font-family:'Inter';font-size:10px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.stitle{font-family:'DM Serif Display';font-size:24px;font-weight:400;margin-bottom:24px;color:var(--white);}
+
+/* Trainer cards */
+.trainer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px;}
+.tc{border:1.5px solid var(--border);padding:20px 16px;cursor:pointer;background:var(--surface);transition:all .2s;position:relative;overflow:hidden;}
+.tc::before{content:'';position:absolute;inset:0;background:var(--gold-dim);opacity:0;transition:opacity .2s;}
+.tc:hover::before,.tc.sel::before{opacity:1;}
+.tc.sel{border-color:var(--gold);}
+.tc-check{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--border2);margin-bottom:12px;transition:all .2s;position:relative;z-index:1;}
+.tc.sel .tc-check{background:var(--gold);border-color:var(--gold);}
+.tc-name{font-family:'DM Serif Display';font-size:17px;color:var(--white);margin-bottom:3px;position:relative;z-index:1;}
+.tc-role{font-size:10px;color:var(--muted2);position:relative;z-index:1;}
+
+/* Saved trainer notice */
+.stn{display:none;background:var(--gold-dim);border:1px solid rgba(184,149,74,.3);padding:11px 14px;margin-bottom:20px;align-items:center;justify-content:space-between;gap:10px;}
+.stn.show{display:flex;}
+.stn-txt{font-size:13px;color:var(--gold-light);}
+.stn-reset{font-size:11px;color:var(--muted2);cursor:pointer;border:none;background:none;font-family:inherit;text-decoration:underline;}
+
+/* Calendar */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.cal-month{font-family:'DM Serif Display';font-size:17px;font-weight:400;}
+.cal-btn{width:30px;height:30px;border:1px solid var(--border2);background:none;color:var(--white);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.cal-btn:hover{border-color:var(--gold);color:var(--gold);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:24px;}
+.cal-dow{text-align:center;font-size:10px;color:var(--muted);padding:5px 0;}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:12px;border:1px solid transparent;transition:all .15s;}
+.cal-day.avail{cursor:pointer;}
+.cal-day.avail:hover{border-color:var(--gold);color:var(--gold);}
+.cal-day.sel{background:var(--gold);color:var(--black);font-weight:700;border-color:var(--gold);}
+.cal-day.today{color:var(--gold-light);}
+.cal-day.off{color:var(--border2);}
+
+/* Slots */
+.slots-area{display:none;margin-bottom:24px;}
+.slots-lbl{font-size:10px;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;}
+.slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.slot{padding:9px 4px;text-align:center;font-size:11px;border:1px solid var(--border);cursor:pointer;background:var(--surface);transition:all .15s;line-height:1.3;}
+.slot:hover{border-color:var(--gold);color:var(--gold);}
+.slot.carted{background:var(--gold-dim);border-color:rgba(184,149,74,.5);color:var(--gold-light);}
+.slot.full{color:var(--muted);cursor:not-allowed;text-decoration:line-through;}
+.slot.too-soon{color:var(--border2);cursor:not-allowed;font-size:10px;}
+.slots-loading{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
+.spin{display:inline-block;width:16px;height:16px;vertical-align:middle;border:2px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Cart panel (floating) */
+.cart-panel{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,.97);border-top:1px solid var(--border2);padding:14px 20px;z-index:30;transform:translateY(100%);transition:transform .3s;max-height:60vh;overflow-y:auto;}
+.cart-panel.open{transform:translateY(0);}
+.cart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cart-title{font-size:13px;font-weight:600;letter-spacing:.06em;}
+.cart-close{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:18px;line-height:1;}
+.cart-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;gap:8px;}
+.cart-item:last-of-type{border-bottom:none;}
+.ci-info{flex:1;}
+.ci-date{color:var(--muted2);font-size:11px;}
+.ci-remove{background:none;border:none;color:var(--error);cursor:pointer;font-size:16px;line-height:1;padding:4px;}
+.cart-empty{text-align:center;padding:20px;color:var(--muted);font-size:13px;}
+.cart-footer{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+
+/* Form */
+.form-group{margin-bottom:16px;}
+.form-label{font-size:11px;color:var(--muted2);margin-bottom:7px;display:block;letter-spacing:.05em;}
+.form-input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--white);padding:10px 13px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s;}
+.form-input:focus{border-color:var(--gold);}
+.form-input::placeholder{color:var(--border2);}
+
+/* Saved profile */
+.saved-banner{display:none;background:var(--surface2);border:1px solid var(--border2);padding:12px 14px;margin-bottom:16px;align-items:center;justify-content:space-between;gap:10px;}
+.saved-banner.show{display:flex;}
+.sb-name{font-size:13px;font-weight:500;}
+.sb-contact{font-size:11px;color:var(--muted2);margin-top:1px;}
+.sb-btns{display:flex;gap:6px;flex-shrink:0;}
+.lbtn{font-size:11px;padding:5px 11px;cursor:pointer;font-family:inherit;background:none;transition:all .15s;}
+.lbtn-use{color:var(--gold);border:1px solid rgba(184,149,74,.4);}
+.lbtn-use:hover{background:var(--gold-dim);}
+.lbtn-del{color:var(--muted);border:1px solid var(--border);}
+.lbtn-del:hover{color:var(--white);border-color:var(--muted);}
+
+/* Confirm summary */
+.sum-box{border:1px solid var(--border);background:var(--surface);margin-bottom:24px;}
+.sum-section{padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface2);}
+.sum-section-title{font-size:10px;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;}
+.sum-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 16px;font-size:13px;}
+.sum-row:not(:last-child){border-bottom:1px solid var(--border);}
+.sr-k{color:var(--muted2);flex-shrink:0;margin-right:16px;}
+.sr-v{font-weight:500;text-align:right;}
+.slot-tag{display:inline-block;background:var(--gold-dim);border:1px solid rgba(184,149,74,.3);color:var(--gold-light);font-size:10px;padding:2px 8px;margin:2px 2px 2px 0;}
+
+/* Buttons */
+.btn-row{display:flex;gap:8px;margin-top:8px;}
+.btn{padding:12px 22px;font-size:13px;font-weight:600;letter-spacing:.07em;cursor:pointer;font-family:inherit;transition:all .2s;border:none;}
+.btn-primary{background:var(--gold);color:var(--black);flex:1;}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-primary:disabled{background:var(--border2);color:var(--muted);cursor:not-allowed;}
+.btn-back{background:none;border:1px solid var(--border);color:var(--muted2);padding:12px 18px;}
+.btn-back:hover{border-color:var(--muted);color:var(--white);}
+.btn-outline{background:none;border:1px solid rgba(184,149,74,.4);color:var(--gold);flex:1;}
+.btn-outline:hover{background:var(--gold-dim);}
+
+/* Success */
+.success-mark{width:56px;height:56px;border:2px solid var(--success);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;color:var(--success);}
+.success-title{font-family:'DM Serif Display';font-size:24px;text-align:center;margin-bottom:6px;}
+.success-sub{text-align:center;color:var(--muted2);font-size:13px;margin-bottom:32px;}
+
+.err{color:var(--error);font-size:12px;margin-top:10px;text-align:center;}
+
+/* LINE notice banner */
+.line-notice{background:rgba(6,199,85,.08);border:1px solid rgba(6,199,85,.25);padding:12px 16px;font-size:12px;color:#06C755;margin-bottom:20px;display:flex;gap:10px;align-items:flex-start;}
+
+@media(max-width:520px){
+  .trainer-grid{grid-template-columns:1fr;}
+  .slots-grid{grid-template-columns:repeat(3,1fr);}
+  .config-grid{grid-template-columns:1fr;}
+  .header{padding:14px 16px;}
+  .page{padding:28px 14px 140px;}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="brand">
+    <div class="brand-emblem">O</div>
+    <div>
+      <div class="brand-name">ONE'S GYM</div>
+      <div class="brand-sub">PERSONAL TRAINING · EBISU</div>
+    </div>
+  </div>
+  <button class="cart-btn" onclick="toggleCart()">
+    <span>予約カート</span>
+    <span class="cart-count" id="cartCount">0</span>
+  </button>
+</header>
+
+<!-- Cart Panel -->
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-header">
+    <div class="cart-title">予約カート</div>
+    <button class="cart-close" onclick="toggleCart()">×</button>
+  </div>
+  <div id="cartItems"></div>
+  <div class="cart-footer">
+    <button class="btn btn-back" style="padding:10px 16px" onclick="toggleCart()">閉じる</button>
+    <button class="btn btn-primary" id="cartCheckout" onclick="goStep(3);toggleCart();" disabled>この内容で予約へ進む</button>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- Config -->
+  <div class="config-panel">
+    <div class="config-title">⚙ セットアップ</div>
+    <div class="config-grid">
+      <div class="cfg-field" style="grid-column:1/-1">
+        <label>Google Calendar API KEY</label>
+        <input type="password" id="cfgApiKey" placeholder="AIzaSy...">
+      </div>
+      <div class="cfg-field"><label>仲間 — カレンダーID</label><input type="text" id="cfgCal0" placeholder="xxx@group.calendar.google.com"></div>
+      <div class="cfg-field"><label>真栄里 — カレンダーID</label><input type="text" id="cfgCal1" placeholder="xxx@group.calendar.google.com"></div>
+      <div class="cfg-field"><label>諸喜田 — カレンダーID</label><input type="text" id="cfgCal2" placeholder="xxx@group.calendar.google.com"></div>
+      <div class="cfg-field" style="grid-column:1/-1">
+        <label>GAS Web App URL（カレンダー登録・LINE通知）</label>
+        <input type="text" id="cfgGas" value="https://script.google.com/macros/s/AKfycbzTeIkidhnW4jfCtEupRjZGIPbQG_os4rLiFT_Oqk2qJNzeTjkS8vEVAmEDriycHhiE/exec">
+      </div>
+    </div>
+    <div class="cfg-save">
+      <button class="btn btn-primary" style="flex:none;padding:7px 18px;font-size:11px" onclick="saveConfig()">保存</button>
+      <span class="cfg-saved" id="cfgSaved">✓ 保存しました</span>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress">
+    <div class="ps active" id="ps1"><div class="pd">1</div><div class="pl">担当</div></div>
+    <div class="pline"></div>
+    <div class="ps" id="ps2"><div class="pd">2</div><div class="pl">日時</div></div>
+    <div class="pline"></div>
+    <div class="ps" id="ps3"><div class="pd">3</div><div class="pl">情報</div></div>
+    <div class="pline"></div>
+    <div class="ps" id="ps4"><div class="pd">4</div><div class="pl">確認</div></div>
+  </div>
+
+  <!-- S1: Trainer -->
+  <div class="section active" id="s1">
+    <div class="eyebrow">Step 1</div>
+    <div class="stitle">担当トレーナーを選んでください</div>
+    <div class="stn" id="stn">
+      <div class="stn-txt" id="stnTxt"></div>
+      <button class="stn-reset" onclick="clearSavedTrainer()">変更する</button>
+    </div>
+    <div class="trainer-grid">
+      <div class="tc" id="tc0" onclick="selectTrainer(0)"><div class="tc-check"></div><div class="tc-name">仲間</div><div class="tc-role">パーソナルトレーナー</div></div>
+      <div class="tc" id="tc1" onclick="selectTrainer(1)"><div class="tc-check"></div><div class="tc-name">真栄里</div><div class="tc-role">パーソナルトレーナー</div></div>
+      <div class="tc" id="tc2" onclick="selectTrainer(2)"><div class="tc-check"></div><div class="tc-name">諸喜田</div><div class="tc-role">パーソナルトレーナー</div></div>
+    </div>
+    <button class="btn btn-primary" id="btnS1" disabled onclick="goStep(2)">日時を選ぶ</button>
+  </div>
+
+  <!-- S2: Date + Slots -->
+  <div class="section" id="s2">
+    <div class="eyebrow">Step 2</div>
+    <div class="stitle">日時を選んでカートに追加</div>
+    <div style="font-size:12px;color:var(--muted2);margin-bottom:20px;">複数の枠をカートに追加してまとめて予約できます。予約は24時間以降の枠のみ選択可能です。</div>
+
+    <div class="cal-nav">
+      <button class="cal-btn" onclick="changeMonth(-1)">‹</button>
+      <div class="cal-month" id="calMonth"></div>
+      <button class="cal-btn" onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+
+    <div class="slots-area" id="slotsArea">
+      <div class="slots-lbl" id="slotsLbl"></div>
+      <div id="slotsCon"></div>
+    </div>
+
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn btn-back" onclick="goStep(1)">← 戻る</button>
+      <button class="btn btn-outline" onclick="toggleCart()" id="btnViewCart" disabled>カートを確認 (<span id="cartCount2">0</span>)</button>
+      <button class="btn btn-primary" id="btnS2go" disabled onclick="goStep(3)">予約へ進む</button>
+    </div>
+  </div>
+
+  <!-- S3: Info -->
+  <div class="section" id="s3">
+    <div class="eyebrow">Step 3</div>
+    <div class="stitle">お客様情報</div>
+
+    <div class="saved-banner" id="savedBanner">
+      <div><div class="sb-name" id="sbName"></div><div class="sb-contact" id="sbContact"></div></div>
+      <div class="sb-btns">
+        <button class="lbtn lbtn-use" onclick="applySaved()">この情報を使う</button>
+        <button class="lbtn lbtn-del" onclick="deleteSaved()">削除</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">お名前</label>
+      <input class="form-input" id="inName" type="text" placeholder="山田 太郎" oninput="validateS3()">
+    </div>
+    <div class="form-group">
+      <label class="form-label">電話番号 または LINE名</label>
+      <input class="form-input" id="inContact" type="text" placeholder="090-xxxx-xxxx" oninput="validateS3()">
+    </div>
+    <div class="form-group">
+      <label class="form-label">メモ（任意）</label>
+      <input class="form-input" id="inNote" type="text" placeholder="気になること・ご要望など">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="goStep(2)">← 戻る</button>
+      <button class="btn btn-primary" id="btnS3" disabled onclick="goStep(4)">内容を確認</button>
+    </div>
+  </div>
+
+  <!-- S4: Confirm -->
+  <div class="section" id="s4">
+    <div class="eyebrow">Step 4</div>
+    <div class="stitle">予約内容の確認</div>
+
+    <div class="line-notice">
+      <span>📩</span>
+      <span>予約確定後、担当トレーナーと翔太朗さんのLINEに通知が届きます。</span>
+    </div>
+
+    <div class="sum-box">
+      <div class="sum-section"><div class="sum-section-title">予約枠</div></div>
+      <div id="sumSlots"></div>
+      <div class="sum-section" style="margin-top:0;border-top:1px solid var(--border)"><div class="sum-section-title">お客様情報</div></div>
+      <div class="sum-row"><span class="sr-k">担当トレーナー</span><span class="sr-v" id="cTrainer"></span></div>
+      <div class="sum-row"><span class="sr-k">お名前</span><span class="sr-v" id="cName"></span></div>
+      <div class="sum-row"><span class="sr-k">連絡先</span><span class="sr-v" id="cContact"></span></div>
+      <div class="sum-row" id="cNoteRow" style="display:none"><span class="sr-k">メモ</span><span class="sr-v" id="cNote"></span></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="goStep(3)">← 戻る</button>
+      <button class="btn btn-primary" id="btnConfirm" onclick="submitBooking()">予約を確定する</button>
+    </div>
+    <div class="err" id="bookErr"></div>
+  </div>
+
+  <!-- S5: Done -->
+  <div class="section" id="s5">
+    <div class="success-mark">✓</div>
+    <div class="success-title">予約が完了しました</div>
+    <div class="success-sub" id="successSub"></div>
+    <div class="sum-box">
+      <div class="sum-row"><span class="sr-k">担当トレーナー</span><span class="sr-v" id="dTrainer"></span></div>
+      <div class="sum-row"><span class="sr-k">予約枠数</span><span class="sr-v" id="dCount"></span></div>
+      <div class="sum-row"><span class="sr-k">お名前</span><span class="sr-v" id="dName"></span></div>
+    </div>
+    <div class="btn-row" style="margin-top:24px;">
+      <button class="btn btn-primary" onclick="reset()">別の予約をする</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Constants ─────────────────────────────────────────────
+const TRAINERS    = ['仲間','真栄里','諸喜田'];
+const PROFILE_KEY = 'og3_profile';
+const TRAINER_KEY = 'og3_trainer';
+const CONFIG_KEY  = 'og3_config';
+const OPEN_H=9, CLOSE_H=23, SLOT_MIN=75;
+const DOW=['日','月','火','水','木','金','土'];
+const MONTHS=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+
+// ── State ─────────────────────────────────────────────────
+const st = {
+  trainerIdx: null,
+  cart: [],           // [{date,dateStr,time,endTime}]
+  cy: new Date().getFullYear(),
+  cm: new Date().getMonth(),
+  selDate: null, selDateStr: null,
+};
+
+// ── Config ────────────────────────────────────────────────
+function loadCfg(){ try{ return JSON.parse(localStorage.getItem(CONFIG_KEY))||{}; }catch{ return {}; } }
+function saveConfig(){
+  const cfg={
+    apiKey: document.getElementById('cfgApiKey').value.trim(),
+    cals: [0,1,2].map(i=>document.getElementById('cfgCal'+i).value.trim()),
+    gas: document.getElementById('cfgGas').value.trim(),
+  };
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+  const el=document.getElementById('cfgSaved');
+  el.style.display='inline'; setTimeout(()=>el.style.display='none',2000);
+}
+function initCfg(){
+  const cfg=loadCfg();
+  if(cfg.apiKey) document.getElementById('cfgApiKey').value=cfg.apiKey;
+  if(cfg.cals) cfg.cals.forEach((v,i)=>{ document.getElementById('cfgCal'+i).value=v; });
+  if(cfg.gas) document.getElementById('cfgGas').value=cfg.gas;
+}
+
+// ── Step nav ──────────────────────────────────────────────
+function goStep(n){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.querySelectorAll('.ps').forEach((el,i)=>{
+    el.classList.remove('active','done');
+    if(i+1<n) el.classList.add('done');
+    if(i+1===n) el.classList.add('active');
+  });
+  if(n===2) renderCalendar();
+  if(n===3) initS3();
+  if(n===4) fillConfirm();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Trainer ───────────────────────────────────────────────
+function selectTrainer(idx){
+  st.trainerIdx=idx;
+  document.querySelectorAll('.tc').forEach((c,i)=>c.classList.toggle('sel',i===idx));
+  document.getElementById('btnS1').disabled=false;
+}
+function initSavedTrainer(){
+  const s=localStorage.getItem(TRAINER_KEY);
+  if(s===null) return;
+  const idx=parseInt(s); if(isNaN(idx)) return;
+  selectTrainer(idx);
+  const el=document.getElementById('stn');
+  el.classList.add('show');
+  document.getElementById('stnTxt').textContent=`前回と同じ ${TRAINERS[idx]} トレーナーで予約します`;
+}
+function clearSavedTrainer(){
+  localStorage.removeItem(TRAINER_KEY);
+  document.getElementById('stn').classList.remove('show');
+  st.trainerIdx=null;
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('btnS1').disabled=true;
+}
+
+// ── Calendar ──────────────────────────────────────────────
+function changeMonth(d){
+  st.cm+=d;
+  if(st.cm>11){st.cm=0;st.cy++;}
+  if(st.cm<0){st.cm=11;st.cy--;}
+  st.selDate=null; st.selDateStr=null;
+  document.getElementById('slotsArea').style.display='none';
+  renderCalendar();
+}
+function renderCalendar(){
+  const y=st.cy,m=st.cm;
+  document.getElementById('calMonth').textContent=`${y}年 ${MONTHS[m]}`;
+  const grid=document.getElementById('calGrid');
+  grid.innerHTML=DOW.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  const today=new Date(); today.setHours(0,0,0,0);
+  const limit=new Date(today); limit.setMonth(limit.getMonth()+1);
+  const first=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  for(let i=0;i<first;i++) grid.innerHTML+=`<div class="cal-day off"></div>`;
+  for(let d=1;d<=days;d++){
+    const dt=new Date(y,m,d);
+    const off=dt<today||dt>limit;
+    const isSel=st.selDate&&st.selDate.getTime()===dt.getTime();
+    let cls='cal-day'+(off?' off':' avail')+(dt.getTime()===today.getTime()?' today':'')+(isSel?' sel':'');
+    const click=off?'': `onclick="selectDate(${y},${m},${d})"`;
+    grid.innerHTML+=`<div class="${cls}" ${click}>${d}</div>`;
+  }
+}
+function selectDate(y,m,d){
+  st.selDate=new Date(y,m,d);
+  st.selDateStr=`${y}年${m+1}月${d}日（${DOW[st.selDate.getDay()]}）`;
+  renderCalendar();
+  loadSlots();
+}
+
+// ── Slots ─────────────────────────────────────────────────
+function genSlots(){
+  const slots=[]; let h=OPEN_H,m=0;
+  while(true){
+    const endM=h*60+m+SLOT_MIN;
+    if(endM>CLOSE_H*60) break;
+    slots.push({h,m}); m+=SLOT_MIN; h+=Math.floor(m/60); m=m%60;
+  }
+  return slots;
+}
+function fmt(h,m){ return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`; }
+function addMin(h,m,min){ const t=h*60+m+min; return {h:Math.floor(t/60),m:t%60}; }
+
+async function loadSlots(){
+  const area=document.getElementById('slotsArea');
+  const con=document.getElementById('slotsCon');
+  area.style.display='block';
+  document.getElementById('slotsLbl').textContent=`${st.selDateStr} の空き枠（75分）`;
+  con.innerHTML=`<div class="slots-loading"><span class="spin"></span>カレンダーを確認中…</div>`;
+  const cfg=loadCfg();
+  const calId=cfg.cals?.[st.trainerIdx];
+  if(!cfg.apiKey||!calId){ renderSlotHTML(con,genSlots(),new Set()); return; }
+  const d=st.selDate;
+  const tMin=new Date(d.getFullYear(),d.getMonth(),d.getDate(),0,0,0).toISOString();
+  const tMax=new Date(d.getFullYear(),d.getMonth(),d.getDate(),23,59,59).toISOString();
+  try{
+    const url=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calId)}/events?key=${encodeURIComponent(cfg.apiKey)}&timeMin=${tMin}&timeMax=${tMax}&singleEvents=true&orderBy=startTime`;
+    const res=await fetch(url);
+    if(!res.ok){ const e=await res.json(); throw new Error(e.error?.message||`HTTP ${res.status}`); }
+    const data=await res.json();
+    const slots=genSlots();
+    const booked=new Set();
+    (data.items||[]).forEach(ev=>{
+      if(!ev.start?.dateTime) return;
+      const s=new Date(ev.start.dateTime),e=new Date(ev.end.dateTime);
+      slots.forEach((sl,i)=>{
+        const ss=new Date(d.getFullYear(),d.getMonth(),d.getDate(),sl.h,sl.m);
+        const en=addMin(sl.h,sl.m,SLOT_MIN);
+        const se=new Date(d.getFullYear(),d.getMonth(),d.getDate(),en.h,en.m);
+        if(ss<e&&se>s) booked.add(i);
+      });
+    });
+    renderSlotHTML(con,slots,booked);
+  }catch(e){
+    con.innerHTML=`<div class="slots-loading" style="color:var(--error)">❌ ${e.message}</div>`;
+  }
+}
+
+function renderSlotHTML(con,slots,booked){
+  const now=new Date();
+  const limit24=new Date(now.getTime()+24*60*60*1000); // 24時間後
+  const cartKeys=new Set(st.cart.map(c=>c.dateStr+'|'+c.time));
+  let html='<div class="slots-grid">';
+  slots.forEach((sl,i)=>{
+    const end=addMin(sl.h,sl.m,SLOT_MIN);
+    const label=`${fmt(sl.h,sl.m)}\n〜${fmt(end.h,end.m)}`;
+    const slotDt=new Date(st.selDate.getFullYear(),st.selDate.getMonth(),st.selDate.getDate(),sl.h,sl.m);
+    const tooSoon=slotDt<limit24;
+    const full=booked.has(i);
+    const carted=cartKeys.has(st.selDateStr+'|'+fmt(sl.h,sl.m));
+    let cls='slot';
+    if(tooSoon) cls+=' too-soon';
+    else if(full) cls+=' full';
+    else if(carted) cls+=' carted';
+    const click=(tooSoon||full)?'': `onclick="toggleCart_slot('${fmt(sl.h,sl.m)}','${fmt(end.h,end.m)}')"`;
+    const disp=tooSoon?`${fmt(sl.h,sl.m)}\n24h前`:label;
+    html+=`<div class="${cls}" ${click} style="white-space:pre-line">${disp}</div>`;
+  });
+  html+='</div>';
+  con.innerHTML=html;
+}
+
+// ── Cart ──────────────────────────────────────────────────
+function toggleCart_slot(time,endTime){
+  const key=st.selDateStr+'|'+time;
+  const idx=st.cart.findIndex(c=>c.dateStr===st.selDateStr&&c.time===time);
+  if(idx>=0){ st.cart.splice(idx,1); }
+  else { st.cart.push({date:st.selDate,dateStr:st.selDateStr,time,endTime,trainerIdx:st.trainerIdx}); }
+  updateCartUI();
+  // re-render slots to show carted state
+  const slots=genSlots(); loadSlots();
+}
+
+function updateCartUI(){
+  const n=st.cart.length;
+  document.getElementById('cartCount').textContent=n;
+  document.getElementById('cartCount2').textContent=n;
+  document.getElementById('btnViewCart').disabled=n===0;
+  document.getElementById('btnS2go').disabled=n===0;
+  document.getElementById('cartCheckout').disabled=n===0;
+  renderCartItems();
+}
+
+function renderCartItems(){
+  const con=document.getElementById('cartItems');
+  if(st.cart.length===0){
+    con.innerHTML='<div class="cart-empty">まだ予約枠がありません。日時を選んでカートに追加してください。</div>';
+    return;
+  }
+  const sorted=[...st.cart].sort((a,b)=>a.date-b.date);
+  con.innerHTML=sorted.map((c,i)=>`
+    <div class="cart-item">
+      <div class="ci-info">
+        <div>${c.dateStr}　${c.time} 〜 ${c.endTime}</div>
+        <div class="ci-date">担当: ${TRAINERS[c.trainerIdx]} ／ 75分</div>
+      </div>
+      <button class="ci-remove" onclick="removeCartItem(${i})" title="削除">×</button>
+    </div>`).join('');
+}
+
+function removeCartItem(i){
+  const sorted=[...st.cart].sort((a,b)=>a.date-b.date);
+  const item=sorted[i];
+  st.cart=st.cart.filter(c=>!(c.dateStr===item.dateStr&&c.time===item.time));
+  updateCartUI();
+}
+
+let cartOpen=false;
+function toggleCart(){
+  cartOpen=!cartOpen;
+  document.getElementById('cartPanel').classList.toggle('open',cartOpen);
+  if(cartOpen) renderCartItems();
+}
+
+// ── S3 ────────────────────────────────────────────────────
+function initS3(){
+  const p=loadProfile();
+  const banner=document.getElementById('savedBanner');
+  if(p?.name){
+    document.getElementById('sbName').textContent=p.name;
+    document.getElementById('sbContact').textContent=p.contact+(p.note?`　メモ: ${p.note}`:'');
+    banner.classList.add('show');
+  } else banner.classList.remove('show');
+}
+function applySaved(){
+  const p=loadProfile(); if(!p) return;
+  document.getElementById('inName').value=p.name||'';
+  document.getElementById('inContact').value=p.contact||'';
+  document.getElementById('inNote').value=p.note||'';
+  document.getElementById('savedBanner').classList.remove('show');
+  validateS3();
+}
+function deleteSaved(){ localStorage.removeItem(PROFILE_KEY); document.getElementById('savedBanner').classList.remove('show'); }
+function validateS3(){
+  const ok=document.getElementById('inName').value.trim()&&document.getElementById('inContact').value.trim();
+  document.getElementById('btnS3').disabled=!ok;
+}
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY)); }catch{ return null; } }
+function saveProfile(n,c,nt){ try{ localStorage.setItem(PROFILE_KEY,JSON.stringify({name:n,contact:c,note:nt})); }catch{} }
+
+// ── S4 Confirm ────────────────────────────────────────────
+function fillConfirm(){
+  const note=document.getElementById('inNote').value.trim();
+  document.getElementById('cTrainer').textContent=TRAINERS[st.trainerIdx];
+  document.getElementById('cName').textContent=document.getElementById('inName').value.trim();
+  document.getElementById('cContact').textContent=document.getElementById('inContact').value.trim();
+  if(note){ document.getElementById('cNote').textContent=note; document.getElementById('cNoteRow').style.display='flex'; }
+  else document.getElementById('cNoteRow').style.display='none';
+  // slots
+  const sorted=[...st.cart].sort((a,b)=>a.date-b.date);
+  document.getElementById('sumSlots').innerHTML=sorted.map(c=>`
+    <div class="sum-row">
+      <span class="sr-k">${c.dateStr}</span>
+      <span class="sr-v">${c.time} 〜 ${c.endTime}<span class="slot-tag">75min</span></span>
+    </div>`).join('');
+}
+
+// ── Submit ────────────────────────────────────────────────
+async function submitBooking(){
+  const btn=document.getElementById('btnConfirm');
+  btn.disabled=true; btn.textContent='処理中…';
+  document.getElementById('bookErr').textContent='';
+  const name=document.getElementById('inName').value.trim();
+  const contact=document.getElementById('inContact').value.trim();
+  const note=document.getElementById('inNote').value.trim();
+  const cfg=loadCfg();
+  const payload={
+    action:'book',
+    trainer: TRAINERS[st.trainerIdx],
+    calId: cfg.cals?.[st.trainerIdx]||'',
+    name, contact, note,
+    slots: st.cart.sort((a,b)=>a.date-b.date).map(c=>({
+      dateStr: c.dateStr,
+      startISO: new Date(c.date.getFullYear(),c.date.getMonth(),c.date.getDate(),...c.time.split(':').map(Number)).toISOString(),
+      endISO:   new Date(c.date.getFullYear(),c.date.getMonth(),c.date.getDate(),...c.endTime.split(':').map(Number)).toISOString(),
+    })),
+  };
+  try{
+    if(cfg.gas){
+      const res=await fetch(cfg.gas,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      if(!res.ok) throw new Error('GAS応答エラー: '+res.status);
+    } else {
+      await new Promise(r=>setTimeout(r,1000));
+    }
+    saveProfile(name,contact,note);
+    localStorage.setItem(TRAINER_KEY,String(st.trainerIdx));
+    document.getElementById('dTrainer').textContent=TRAINERS[st.trainerIdx];
+    document.getElementById('dCount').textContent=`${st.cart.length}枠`;
+    document.getElementById('dName').textContent=name;
+    document.getElementById('successSub').textContent=cfg.gas
+      ? '担当トレーナーと翔太朗さんのLINEに通知が送られました。当日お待ちしております！'
+      : '※ デモモード。GAS URLを設定すると実際に登録・通知されます。';
+    goStep(5);
+  }catch(e){
+    document.getElementById('bookErr').textContent='❌ '+e.message;
+    btn.disabled=false; btn.textContent='予約を確定する';
+  }
+}
+
+// ── Reset ─────────────────────────────────────────────────
+function reset(){
+  st.cart=[]; st.selDate=null; st.selDateStr=null;
+  st.cy=new Date().getFullYear(); st.cm=new Date().getMonth();
+  ['inName','inContact','inNote'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('slotsArea').style.display='none';
+  updateCartUI();
+  initSavedTrainer();
+  goStep(1);
+}
+
+// ── Init ──────────────────────────────────────────────────
+initCfg(); initSavedTrainer(); renderCalendar(); updateCartUI();
+</script>
+</body>
+</html>
