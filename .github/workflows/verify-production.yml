@@ -1,0 +1,30 @@
+name: Verify production (post-deploy)
+
+# GitHub PagesはClaude Codeクラウド実行環境からの直接アクセスが
+# ネットワークポリシーでブロックされる場合がある（EGRESS_BLOCKED）。
+# 本番反映後の生死確認はGitHub Actionsランナー（無制限アウトバウンド）側で行う。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for GitHub Pages rebuild
+        run: sleep 30
+      - name: 主要ページのHTTPステータス確認
+        run: |
+          for url in "https://onesgym.jp/" "https://onesgym.jp/reserve.html" "https://onesgym.jp/price.html" "https://onesgym.jp/about.html" "https://onesgym.jp/access.html"; do
+            status=$(curl -s -o /dev/null -w "%{http_code}" -L "$url")
+            echo "$url -> $status"
+            if [ "$status" != "200" ]; then
+              echo "::error::$url が200を返しませんでした"
+              exit 1
+            fi
+          done
