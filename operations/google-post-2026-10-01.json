@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-01",
+  "status": "pending_image_publication",
+  "published": false,
+  "article_url": "https://onesgym.jp/blog-training-failure-rir.html",
+  "article_commit": "1213f6747d8a9f6c97f60d4936c8bd8a2274ea79",
+  "image_library_file_id": "libfile_cb7b4627c0248191a5328e487e28eb87",
+  "image_git_blob_sha": "3416e76ab7fe7c944cacfd0da8fb04b8dd4b29bb",
+  "image_path": "assets/img/ones-personal-gym-logo.png",
+  "blocker": "Binary create_blob interrupted; subsequent lookup 404. No create_local_post attempted. Recheck recent posts and asset existence before retry.",
+  "summary": "【筋トレは、毎セット限界まで必要？】\n\n「もう1回もできない」まで行うことを、毎セットの必須条件にする必要はありません。\n\n負荷を考える目安のひとつが、RIR（アール・アイ・アール）。同じフォーム・同じ動かす範囲で「あと何回できそうか」を表します。あと2回ならRIR 2です。\n\n筋トレ経験者を対象にした8週間の研究では、限界まで行う方法と2回の余裕を残す方法の両方で改善が見られました。ただし一部の筋肥大指標は限界まで行う群に有利な傾向もあり、「どちらが常に正解」とは言えません。\n\nまずは、重さ・回数・終えたときの余裕をセットで記録。反動や動かす範囲が変わっていないかも確認しましょう。\n\n「あと2回」は万能の処方ではなく、負荷を相談するための目安。自分に合った調整方法をブログで解説しています。\n\nONE’S GYM 恵比寿｜トレーニングのヒント",
+  "source": "https://pubmed.ncbi.nlm.nih.gov/40249908/",
+  "planned_cta_type": "LEARN_MORE",
+  "planned_cta_url": "https://onesgym.jp/blog-training-failure-rir.html"
+}
