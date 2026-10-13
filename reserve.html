@@ -450,7 +450,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
 @keyframes fabPulse{0%,100%{box-shadow:0 8px 24px rgba(6,199,85,.45),0 0 0 0 rgba(6,199,85,.35);}50%{box-shadow:0 8px 24px rgba(6,199,85,.45),0 0 0 14px rgba(6,199,85,0);}}
 @media (max-width:768px){.line-fab{width:72px;height:72px;right:1rem;bottom:1.1rem;}.line-fab svg{width:22px;height:22px;}.line-fab span{font-size:.5rem;}}
 </style>
-<script src="assets/js/attribution.js" defer></script></head>
+<script src="assets/js/attribution.js" defer></script><script src="assets/js/analytics.js" defer></script></head>
 <body>
 
 <div id="cur"></div><div id="cur-o"></div>
@@ -665,6 +665,15 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
       .then(function(r){
         if(r && r.ok){
           try { sessionStorage.removeItem(KEY); } catch(x) {}
+          // GA4: 送信成功（入力値は送らない。区分だけ）。テスト送信は別名で送り、成果から外す（assets/js/analytics.js）
+          try {
+            if(typeof window.onesgymTrack === 'function' && r.status !== 'duplicate'){
+              var isTest = /テスト/.test(payload.name + ' ' + payload.message);
+              var menuKey = { '体験トレーニング（90分・¥5,500税込）':'trial', '無料カウンセリング':'counseling', 'オンラインカウンセリング':'online' }[payload.menu] || 'other';
+              window.onesgymTrack(isTest ? 'reserve_submit_test' : 'reserve_submit_success',
+                { form_kind: /^体験/.test(payload.kind) ? 'trial' : 'inquiry', menu: menuKey, traffic_type: isTest ? 'internal' : undefined });
+            }
+          } catch(x) {}
           form.style.display = 'none';
           successBox.style.display = 'block';
           return;
