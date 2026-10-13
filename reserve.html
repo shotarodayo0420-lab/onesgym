@@ -450,7 +450,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
 @keyframes fabPulse{0%,100%{box-shadow:0 8px 24px rgba(6,199,85,.45),0 0 0 0 rgba(6,199,85,.35);}50%{box-shadow:0 8px 24px rgba(6,199,85,.45),0 0 0 14px rgba(6,199,85,0);}}
 @media (max-width:768px){.line-fab{width:72px;height:72px;right:1rem;bottom:1.1rem;}.line-fab svg{width:22px;height:22px;}.line-fab span{font-size:.5rem;}}
 </style>
-</head>
+<script src="assets/js/attribution.js" defer></script></head>
 <body>
 
 <div id="cur"></div><div id="cur-o"></div>
@@ -658,7 +658,8 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
     var payload = { form:'v2', kind:v('種別'), menu:v('メニュー'), name:v('お名前'), phone:phone, email:v('メールアドレス'),
       wish1:v('第1希望日時'), wish2:v('第2希望日時'), wish3:v('第3希望日時'), trainer:v('希望トレーナー'),
       message:v('お悩み・ご質問'), consent: form.querySelector('#privacyAgree').checked ? '同意する' : '',
-      website:v('website'), requestId:rid() };
+      website:v('website'), requestId:rid(),
+      attr: (typeof window.onesgymAttr === 'function') ? window.onesgymAttr() : null };
     fetch(endpoint, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
       .then(function(res){ return res.json(); })
       .then(function(r){
