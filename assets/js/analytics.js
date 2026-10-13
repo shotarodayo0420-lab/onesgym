@@ -25,6 +25,8 @@
   var base = { page_location: cleanUrl(location.href), page_referrer: document.referrer ? cleanUrl(document.referrer) : '',
     allow_google_signals: false, allow_ad_personalization_signals: false };
   if (internal) base.traffic_type = 'internal';
+  // 動作確認用: URLに ga_debug=1 を付けると GA4 の DebugView に出す（データフィルタ「Developer Traffic」でレポートからは除外）
+  if (/[?&]ga_debug=1/.test(location.search)) base.debug_mode = true;
   gtag('js', new Date());
   gtag('config', ID, base);
   var s = document.createElement('script');
@@ -40,6 +42,7 @@
     var p = params || {};
     if (internal) p.traffic_type = 'internal';
     if (p.traffic_type === undefined) delete p.traffic_type;
+    if (base.debug_mode) p.debug_mode = true;
     p.page_path = location.pathname;
     gtag('event', name, p);
   };
