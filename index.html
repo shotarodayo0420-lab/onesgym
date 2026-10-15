@@ -570,6 +570,32 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
   object-fit:contain;
   vertical-align:bottom;
 }
+.hero-h1-kw{display:block;font-family:'Noto Sans JP',sans-serif;font-size:.85rem;font-weight:400;letter-spacing:.18em;line-height:1.6;color:rgba(255,255,255,.85);margin-bottom:1rem;}
+.feat-sec{background:var(--white);padding:5.5rem 3rem;}
+.feat-lead{font-size:.86rem;line-height:2;color:var(--gray);max-width:760px;margin:1rem 0 2.5rem;}
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(0,0,0,.08);}
+.feat-card{background:var(--white);padding:2rem 1.6rem;display:flex;flex-direction:column;gap:.8rem;}
+.feat-card h3{font-size:1rem;font-weight:500;color:var(--ink);letter-spacing:.04em;}
+.feat-card p{font-size:.8rem;line-height:1.9;color:var(--gray);flex:1;}
+.feat-card a,.info-link{font-size:.74rem;color:var(--gold);text-decoration:none;letter-spacing:.06em;}
+.info-sec{background:var(--surface);padding:5rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;}
+.info-title{font-size:1.15rem;font-weight:500;color:var(--ink);margin-bottom:1.2rem;letter-spacing:.06em;}
+.info-table{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:1rem;}
+.info-table th,.info-table td{padding:.8rem .4rem;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;vertical-align:top;line-height:1.7;}
+.info-table th{font-weight:400;color:var(--gray);width:42%;}
+.info-table td{color:var(--ink);}
+.info-table small{display:block;font-size:.7rem;color:var(--gray);}
+.info-note{font-size:.72rem;line-height:1.9;color:var(--gray);margin-bottom:.8rem;}
+.info-cta{grid-column:span 2;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+@media (max-width:768px){
+  .hero-h1-kw{font-size:.72rem;letter-spacing:.12em;margin-bottom:.7rem;}
+  .feat-sec{padding:3.5rem 1.25rem;}
+  .feat-grid{grid-template-columns:1fr;}
+  .info-sec{grid-template-columns:1fr;padding:3.5rem 1.25rem;gap:2.5rem;}
+  .info-cta{grid-column:auto;flex-direction:column;}
+  .info-cta .btn{text-align:center;}
+  .info-table th{width:36%;}
+}
 .ba-preview-img[data-solo]{grid-column:span 2;justify-self:center;width:100%;max-width:760px;}
 .ba-preview-cta{
   grid-column:span 2;
@@ -636,7 +662,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <p class="hero-eyebrow">Ebisu Personal Training Gym</p>
-    <h1 class="hero-title">整えるのは、<br><em>身体だけじゃない。</em></h1>
+    <h1 class="hero-title"><span class="hero-h1-kw">恵比寿のパーソナルジム ONE'S GYM</span>整えるのは、<br><em>身体だけじゃない。</em></h1>
     <p class="hero-sub">姿勢・呼吸・感覚。オーダーメイドのトレーニングで、<br>本質から変わる体験を。</p>
     <div class="hero-btns">
       <a href="reserve.html" class="btn btn-gold">体験トレーニングを予約する</a>
@@ -648,12 +674,52 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
 
 <div class="nav-grid reveal">
   <a href="about.html" class="ng-card"><div class="ng-num">01</div><div class="ng-label">About</div><div class="ng-title">One's GYMについて</div><div class="ng-desc">姿勢・呼吸・感覚をトータルで整える独自のアプローチ。</div><span class="ng-arrow">→</span></a>
-  <a href="trainer.html" class="ng-card"><div class="ng-num">02</div><div class="ng-label">Trainer</div><div class="ng-title">トレーナー紹介</div><div class="ng-desc">専門知識を持つ4名のトレーナーが丁寧にサポート。</div><span class="ng-arrow">→</span></a>
+  <a href="trainer.html" class="ng-card"><div class="ng-num">02</div><div class="ng-label">Trainer</div><div class="ng-title">トレーナー紹介</div><div class="ng-desc">専門知識を持つトレーナーが丁寧にサポート。</div><span class="ng-arrow">→</span></a>
   <a href="price.html" class="ng-card"><div class="ng-num">03</div><div class="ng-label">Price</div><div class="ng-title">料金プラン</div><div class="ng-desc">月額・コース・単発・ママトレまで多彩なプラン。</div><span class="ng-arrow">→</span></a>
   <a href="flow.html" class="ng-card"><div class="ng-num">04</div><div class="ng-label">Flow</div><div class="ng-title">体験の流れ</div><div class="ng-desc">予約からトレーニングまでをご確認ください。</div><span class="ng-arrow">→</span></a>
 </div>
 
-<div class="stats-band reveal">
+<section class="feat-sec reveal" id="features">
+  <div class="s-label">Features</div>
+  <h2 class="column-title">恵比寿のパーソナルジム<br><em>ONE'S GYM</em>の特徴</h2>
+  <p class="feat-lead">恵比寿駅（JR・東京メトロ日比谷線）から徒歩4分、代官山駅から徒歩6分。完全個室で姿勢・呼吸・感覚を確認したうえで、筋力トレーニングとマシンピラティスを目的に合わせて組み合わせます。</p>
+  <div class="feat-grid">
+    <div class="feat-card"><h3>筋トレ×マシンピラティス</h3><p>鍛える運動と整える運動を、身体の状態と目的に合わせて選択・併用します。全員に同じメニューを行うわけではありません。</p><a href="machine-pilates-ebisu.html">マシンピラティス×筋トレ →</a></div>
+    <div class="feat-card"><h3>完全個室のマンツーマン</h3><p>周囲の目を気にせず、自分の身体とトレーニングに集中できます。ウェア・タオル・靴下・シューズ・水は無料レンタルで、手ぶらで通えます。</p><a href="ebisu-personal-gym.html">恵比寿でパーソナルジムを探している方へ →</a></div>
+    <div class="feat-card"><h3>子連れで通える</h3><p>完全個室にベビーサークルを用意しています（専任の託児サービスではありません）。産後の体型改善・骨盤ケアにも対応し、ママトレプランがあります。</p><a href="postpartum-personal-training-ebisu.html">産後・子連れのトレーニング →</a></div>
+    <div class="feat-card"><h3>3名のトレーナー</h3><p>呼吸・姿勢・動きのクセから見ていく指導や、初心者からコンテスト出場を目指す方まで食事・生活習慣を含めたサポートなど、それぞれの専門を持つトレーナーが担当します。指名もできます。</p><a href="trainer.html">トレーナー紹介 →</a></div>
+  </div>
+</section>
+
+<section class="info-sec reveal" id="price-access">
+  <div class="info-col">
+    <h2 class="info-title">料金の目安</h2>
+    <table class="info-table">
+      <tr><th>体験トレーニング（カウンセリング込み）</th><td>5,500円</td></tr>
+      <tr><th>月額会員（月4回）</th><td>40,000円<small>（1回あたり10,000円）</small></td></tr>
+      <tr><th>単発トレーニング（60分）</th><td>15,000円</td></tr>
+      <tr><th>入会金</th><td>33,000円<small>（当日入会で無料）</small></td></tr>
+    </table>
+    <p class="info-note">金額はすべて税込。縛りなし。現金・カード・銀行振込・分割払いに対応。体験には体組成測定・姿勢チェック・食事アドバイスが含まれます。</p>
+    <a href="price.html" class="info-link">料金プランをすべて見る →</a>
+  </div>
+  <div class="info-col">
+    <h2 class="info-title">アクセス・予約可能時間</h2>
+    <table class="info-table">
+      <tr><th>住所</th><td>〒150-0021 東京都渋谷区恵比寿西1丁目17-1 えびす第一ビル 地下1階</td></tr>
+      <tr><th>最寄り駅</th><td>JR山手線・埼京線／東京メトロ日比谷線 恵比寿駅 徒歩4分<br>東急東横線 代官山駅 徒歩6分</td></tr>
+      <tr><th>予約可能時間</th><td>毎日（土日祝を含む）7:00〜23:00・完全予約制</td></tr>
+      <tr><th>駐車場</th><td>専用・提携駐車場なし（近隣のコインパーキングをご利用ください）</td></tr>
+    </table>
+    <a href="access.html" class="info-link">地図と行き方を見る →</a>
+  </div>
+  <div class="info-cta">
+    <a href="reserve.html" class="btn btn-gold">体験トレーニングを予約する（5,500円）</a>
+    <a href="faq.html" class="btn btn-outline">よくある質問を見る</a>
+  </div>
+</section>
+
+<div class="stats-band reveal" style="display:none" data-hidden-reason="2026-10-15 数値（満足度・指導実績・在籍人数〔トレーナー紹介は3名〕・経験年数）の根拠が未確認のため暫定非表示（数値は未変更）">
   <div class="stats-grid">
     <div class="stat-item"><div class="stat-num"><span class="count" data-count="98">98</span><span class="stat-unit">%</span></div><div class="stat-label">顧客満足度</div></div>
     <div class="stat-item"><div class="stat-num"><span class="count" data-count="500">500</span><span class="stat-unit">+</span></div><div class="stat-label">指導実績</div></div>
