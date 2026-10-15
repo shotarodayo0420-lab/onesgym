@@ -637,7 +637,26 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
     return id;
   }
   function v(n){ var el = form.querySelector('[name="' + n + '"]'); return el ? String(el.value || '').trim() : ''; }
-  function fail(msg){
+  // GA4（2026-10-15）: 入力開始・送信ボタン押下・送信失敗を区別して記録。入力値は送らない。テスト（お名前・本文に「テスト」）は internal
+  function isTestInput(){ return /テスト/.test(v('お名前') + ' ' + v('お悩み・ご質問')); }
+  function track(name, params){
+    try {
+      if(typeof window.onesgymTrack !== 'function') return;
+      params = params || {};
+      if(isTestInput()) params.traffic_type = 'internal';
+      window.onesgymTrack(name, params);
+    } catch(x) {}
+  }
+  var started = false;
+  function onStart(e){
+    if(started || !e.target || e.target.name === 'website') return;
+    started = true;
+    track('reserve_form_start', { field: ({ '種別':'kind', 'メニュー':'menu', 'お名前':'name', '電話番号':'phone', 'メールアドレス':'email' })[e.target.name] || 'other' });
+  }
+  form.addEventListener('input', onStart, true);
+  form.addEventListener('change', onStart, true);
+  function fail(msg, type){
+    track('reserve_submit_error', { error_type: type || 'unknown' });
     errorMsg.textContent = msg || '送信に失敗しました。お手数ですが公式LINEよりご連絡ください。';
     errorMsg.style.display = 'block';
     sending = false;
@@ -648,10 +667,15 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
     e.preventDefault();
     if(sending) return;
     errorMsg.style.display = 'none';
-    if(!form.checkValidity()){ form.reportValidity(); return; }
+    track('reserve_submit_click', { form_kind: /^体験/.test(v('種別')) ? 'trial' : (v('種別') ? 'inquiry' : 'unset') });
+    if(!form.checkValidity()){
+      var bad = form.querySelector(':invalid');
+      track('reserve_submit_error', { error_type: 'required', field: bad ? ({ '種別':'kind', 'メニュー':'menu', 'お名前':'name', '電話番号':'phone', 'メールアドレス':'email', 'プライバシーポリシー同意':'consent' })[bad.name] || 'other' : 'other' });
+      form.reportValidity(); return;
+    }
     var phone = v('電話番号').replace(/[‐－―ー\-\s]/g,'').replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0xFEE0);});
-    if(!/^0\d{9,10}$/.test(phone)){ fail('電話番号は0から始まる10〜11桁の数字で入力してください。'); return; }
-    if(!endpoint){ fail('現在フォームの準備中です。お手数ですが公式LINEよりお申し込みください。'); return; }
+    if(!/^0\d{9,10}$/.test(phone)){ fail('電話番号は0から始まる10〜11桁の数字で入力してください。', 'phone_format'); return; }
+    if(!endpoint){ fail('現在フォームの準備中です。お手数ですが公式LINEよりお申し込みください。', 'no_endpoint'); return; }
     sending = true;
     submitBtn.disabled = true;
     submitBtn.textContent = '送信中...';
@@ -679,9 +703,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
           return;
         }
         var first = r && r.errors ? r.errors[Object.keys(r.errors)[0]] : '';
-        fail(first ? first + '。' : (r && r.message));
+        fail(first ? first + '。' : (r && r.message), first ? 'api_validation' : 'api_error');
       })
-      .catch(function(){ fail('通信に失敗しました。もう一度「送信する」を押してください。解決しない場合は公式LINEよりご連絡ください。'); });
+      .catch(function(){ fail('通信に失敗しました。もう一度「送信する」を押してください。解決しない場合は公式LINEよりご連絡ください。', 'network'); });
   });
 })();
 </script>
