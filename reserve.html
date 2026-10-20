@@ -450,7 +450,8 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
 @keyframes fabPulse{0%,100%{box-shadow:0 8px 24px rgba(6,199,85,.45),0 0 0 0 rgba(6,199,85,.35);}50%{box-shadow:0 8px 24px rgba(6,199,85,.45),0 0 0 14px rgba(6,199,85,0);}}
 @media (max-width:768px){.line-fab{width:72px;height:72px;right:1rem;bottom:1.1rem;}.line-fab svg{width:22px;height:22px;}.line-fab span{font-size:.5rem;}}
 </style>
-<script src="assets/js/attribution.js" defer></script><script src="assets/js/analytics.js" defer></script></head>
+<script src="assets/js/attribution.js" defer></script><script src="assets/js/analytics.js" defer></script><style>#form{scroll-margin-top:72px}</style>
+</head>
 <body>
 
 <div id="cur"></div><div id="cur-o"></div>
@@ -468,7 +469,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
   <a href="faq.html" onclick="closeMobileMenu()">FAQ</a>
   <a href="blog.html" onclick="closeMobileMenu()">BLOG</a>
   <a href="access.html" onclick="closeMobileMenu()">ACCESS</a>
-  <a href="reserve.html" class="mm-cta" onclick="closeMobileMenu()">体験予約</a>
+  <a href="reserve.html#form" class="mm-cta" onclick="closeMobileMenu()">体験予約</a>
   <a href="https://lin.ee/QTS2Cmq" class="mm-line" target="_blank" onclick="closeMobileMenu()">公式LINE</a>
 </div>
 
@@ -486,7 +487,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
     <li><a href="blog.html" >BLOG</a></li>
     <li><a href="access.html" >ACCESS</a></li>
   </ul>
-  <a href="reserve.html" class="nav-cta">体験予約</a>
+  <a href="reserve.html#form" class="nav-cta">体験予約</a>
   <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="メニュー"><span></span><span></span><span></span></button>
 </nav>
 
@@ -544,7 +545,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
           <label class="form-label">お問い合わせ種別<span class="req">※必須</span></label>
           <select class="form-select" name="種別" required>
             <option value="">選択してください</option>
-            <option value="体験トレーニングの予約">体験トレーニングの予約</option>
+            <option value="体験トレーニングの予約" selected>体験トレーニングの予約</option>
             <option value="お問い合わせ・ご質問">お問い合わせ・ご質問</option>
           </select>
         </div>
@@ -552,7 +553,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
           <label class="form-label">ご希望メニュー<span class="req">※必須</span></label>
           <select class="form-select" name="メニュー" required>
             <option value="">選択してください</option>
-            <option value="体験トレーニング（90分・¥5,500税込）">体験トレーニング（90分・¥5,500税込）</option>
+            <option value="体験トレーニング（90分・¥5,500税込）" selected>体験トレーニング（90分・¥5,500税込）</option>
             <option value="無料カウンセリング">無料カウンセリング</option>
             <option value="オンラインカウンセリング">オンラインカウンセリング</option>
           </select>
@@ -560,16 +561,16 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">お名前<span class="req">※必須</span></label>
-            <input type="text" class="form-input" name="お名前" placeholder="山田 太郎" required>
+            <input type="text" class="form-input" name="お名前" placeholder="山田 太郎" autocomplete="name" required>
           </div>
           <div class="form-group">
             <label class="form-label">電話番号<span class="req">※必須</span></label>
-            <input type="tel" class="form-input" name="電話番号" placeholder="090-1234-5678" required>
+            <input type="tel" class="form-input" name="電話番号" placeholder="090-1234-5678" autocomplete="tel" inputmode="tel" required>
           </div>
         </div>
         <div class="form-group">
           <label class="form-label">メールアドレス<span class="req">※必須</span></label>
-          <input type="email" class="form-input" name="メールアドレス" placeholder="example@mail.com" required>
+          <input type="email" class="form-input" name="メールアドレス" placeholder="example@mail.com" autocomplete="email" inputmode="email" required>
         </div>
         <div class="form-divider"><div class="form-divider-line"></div><div class="form-divider-text">ご希望日時（任意）</div><div class="form-divider-line"></div></div>
         <div class="form-row">
@@ -738,7 +739,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
       </div>
       <div class="footer-nav-col">
         <h4>Contact</h4>
-        <a href="reserve.html">体験予約</a>
+        <a href="reserve.html#form">体験予約</a>
         <a href="https://lin.ee/QTS2Cmq" target="_blank">公式LINE</a>
       </div>
     </div>
@@ -747,7 +748,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
     <div class="footer-copy">© 2025 ONE'S GYM EBISU. ALL RIGHTS RESERVED.</div>
     <div class="footer-btns">
       <a href="https://lin.ee/QTS2Cmq" class="footer-btn" target="_blank">LINE</a>
-      <a href="reserve.html" class="footer-btn gold">体験を予約する（5,500円）</a>
+      <a href="reserve.html#form" class="footer-btn gold">体験を予約する（5,500円）</a>
     </div>
   </div>
 </footer>

@@ -151,10 +151,10 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,.9) 0%,rgba(10,10,10,.25) 55%,rgba(10,10,10,.0) 100%);}
 .hero-content{position:relative;z-index:2;padding:0 3rem 5rem;max-width:700px;}
 .hero-eyebrow{font-size:.58rem;letter-spacing:.45em;color:rgba(255,255,255,.55);text-transform:uppercase;margin-bottom:1rem;opacity:0;animation:fadeUp .8s .3s forwards;}
-.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,6.5vw,6.5rem);font-weight:300;line-height:.95;color:var(--white);letter-spacing:-.02em;margin-bottom:1.5rem;opacity:0;animation:fadeUp .9s .5s forwards;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,6.5vw,6.5rem);font-weight:300;line-height:.95;color:var(--white);letter-spacing:-.02em;margin-bottom:1.5rem;}
 .hero-title em{font-style:italic;color:rgba(255,255,255,.55);}
 .hero-sub{font-size:.82rem;color:rgba(255,255,255,.6);line-height:2;margin-bottom:2.2rem;opacity:0;animation:fadeUp .8s .7s forwards;max-width:480px;}
-.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:fadeUp .8s .9s forwards;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
 .hero-scroll{position:absolute;bottom:2rem;right:3rem;z-index:10;display:flex;flex-direction:column;align-items:center;gap:.4rem;color:rgba(255,255,255,.3);font-size:.52rem;letter-spacing:.3em;text-transform:uppercase;opacity:0;animation:fadeUp .8s 1.3s forwards;}
 .hero-scroll-line{width:1px;height:44px;background:rgba(255,255,255,.2);animation:pulse 2s ease-in-out infinite;}
 @keyframes pulse{0%,100%{opacity:.2;}50%{opacity:.7;}}
@@ -631,7 +631,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
   <a href="faq.html" onclick="closeMobileMenu()">FAQ</a>
   <a href="blog.html" onclick="closeMobileMenu()">BLOG</a>
   <a href="access.html" onclick="closeMobileMenu()">ACCESS</a>
-  <a href="reserve.html" class="mm-cta" onclick="closeMobileMenu()">体験予約</a>
+  <a href="reserve.html#form" class="mm-cta" onclick="closeMobileMenu()">体験予約</a>
   <a href="https://lin.ee/QTS2Cmq" class="mm-line" target="_blank" onclick="closeMobileMenu()">公式LINE</a>
 </div>
 
@@ -649,7 +649,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
     <li><a href="blog.html" >BLOG</a></li>
     <li><a href="access.html" >ACCESS</a></li>
   </ul>
-  <a href="reserve.html" class="nav-cta">体験予約</a>
+  <a href="reserve.html#form" class="nav-cta">体験予約</a>
   <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="メニュー"><span></span><span></span><span></span></button>
 </nav>
 
@@ -665,7 +665,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
     <h1 class="hero-title"><span class="hero-h1-kw">恵比寿のパーソナルジム ONE'S GYM</span>整えるのは、<br><em>身体だけじゃない。</em></h1>
     <p class="hero-sub">姿勢・呼吸・感覚。オーダーメイドのトレーニングで、<br>本質から変わる体験を。</p>
     <div class="hero-btns">
-      <a href="reserve.html" class="btn btn-gold">体験トレーニングを予約する</a>
+      <a href="reserve.html#form" class="btn btn-gold">体験トレーニングを予約する</a>
       <a href="https://lin.ee/QTS2Cmq" class="btn btn-line" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.03 3.58 7.4 8.42 8.04.33.07.77.22.89.5.1.26.07.66.03.92l-.14.86c-.04.26-.2 1.01.89.55 1.09-.46 5.87-3.46 8.01-5.92C21.6 13.45 22 11.86 22 10.13 22 5.64 17.52 2 12 2z"/></svg> 公式LINEで無料相談</a>
     </div>
   </div>
@@ -714,7 +714,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
     <a href="access.html" class="info-link">地図と行き方を見る →</a>
   </div>
   <div class="info-cta">
-    <a href="reserve.html" class="btn btn-gold">体験トレーニングを予約する（5,500円）</a>
+    <a href="reserve.html#form" class="btn btn-gold">体験トレーニングを予約する（5,500円）</a>
     <a href="faq.html" class="btn btn-outline">よくある質問を見る</a>
   </div>
 </section>
@@ -832,7 +832,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
   <p class="cta-band-sub">まずは体験トレーニングで、あなたの身体と向き合いましょう。</p>
   <p class="cta-band-note">体験トレーニング ¥5,500（税込）</p>
   <div class="cta-band-btns">
-    <a href="reserve.html" class="btn btn-gold">体験を予約する</a>
+    <a href="reserve.html#form" class="btn btn-gold">体験を予約する</a>
     <a href="https://lin.ee/QTS2Cmq" class="btn btn-line" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.03 3.58 7.4 8.42 8.04.33.07.77.22.89.5.1.26.07.66.03.92l-.14.86c-.04.26-.2 1.01.89.55 1.09-.46 5.87-3.46 8.01-5.92C21.6 13.45 22 11.86 22 10.13 22 5.64 17.52 2 12 2z"/></svg> LINEで相談する</a>
   </div>
 </div>
@@ -861,7 +861,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
       </div>
       <div class="footer-nav-col">
         <h4>Contact</h4>
-        <a href="reserve.html">体験予約</a>
+        <a href="reserve.html#form">体験予約</a>
         <a href="https://lin.ee/QTS2Cmq" target="_blank">公式LINE</a>
       </div>
     </div>
@@ -870,7 +870,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
     <div class="footer-copy">© 2025 ONE'S GYM EBISU. ALL RIGHTS RESERVED.</div>
     <div class="footer-btns">
       <a href="https://lin.ee/QTS2Cmq" class="footer-btn" target="_blank">LINE</a>
-      <a href="reserve.html" class="footer-btn gold">体験を予約する（5,500円）</a>
+      <a href="reserve.html#form" class="footer-btn gold">体験を予約する（5,500円）</a>
     </div>
   </div>
 </footer>
@@ -882,7 +882,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:3rem;}
 <!-- Sticky CTA bar (mobile) -->
 <div class="sticky-cta" id="stickyCta">
   <a href="https://lin.ee/QTS2Cmq" target="_blank" class="sc-line"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.03 3.58 7.4 8.42 8.04.33.07.77.22.89.5.1.26.07.66.03.92l-.14.86c-.04.26-.2 1.01.89.55 1.09-.46 5.87-3.46 8.01-5.92C21.6 13.45 22 11.86 22 10.13 22 5.64 17.52 2 12 2z"/></svg>LINEで無料相談<small>1分で登録完了</small></a>
-  <a href="reserve.html" class="sc-trial">体験を予約する<small>体験 ¥5,500（税込）</small></a>
+  <a href="reserve.html#form" class="sc-trial">体験を予約する<small>体験 ¥5,500（税込）</small></a>
 </div>
 
 <script>
